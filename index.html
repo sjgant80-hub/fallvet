@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>◊ FallVet · sovereign UK veterinary practice management · RCVS · PSS · CD register · cascade</title>
+<meta name="description" content="Sovereign UK veterinary practice management for 1-10 clinician independent vets. RCVS-regulated, PSS-accredited (Core/GP/Hospital). Multi-vet, multi-client, animal records, consult notes (append-only, signed), prescriptions, controlled drug register (Schedule 2/3 with two-witness), vaccinations, microchips, AHC, PSS evidence. Not a PACS, lab integration or claims portal. Sovereign — data stays on device.">
+<meta name="prime" content="947">
+<meta name="version" content="1.0.0">
+<meta name="theme-color" content="#0b0a0f">
+<link rel="manifest" href='data:application/manifest+json,{"name":"FallVet","short_name":"fallvet","start_url":"./","display":"standalone","background_color":"%230b0a0f","theme_color":"%23c8794a","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 192 192%27><rect width=%27192%27 height=%27192%27 fill=%27%230b0a0f%27 rx=%2828%27/><text x=%2796%27 y=%27138%27 font-family=%27Georgia, serif%27 font-size=%27110%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%23c8794a%27>%E2%97%8A</text></svg>","sizes":"192x192","type":"image/svg+xml"}]}'>
+<style>
+:root{
+  --void:#0b0a0f;--void-2:#13121a;--ink:#1a1922;--ink-2:#22212c;
+  --line:#2a2934;--line-soft:#1f1e28;
+  --cream:#e6e1d6;--cream-dim:#a8a395;--cream-muted:#6e6a5e;
+  --brass:#c8974a;--amber:#ff8c00;--ox:#a8412a;--ox-warm:#c8553a;
+  --green:#4ade80;--red:#ef4444;--blue:#60a5fa;--yellow:#fbbf24;
+  --serif:Georgia,'Libre Baskerville',ui-serif,serif;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--void);color:var(--cream);font:14px/1.55 var(--sans);min-height:100dvh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;background:transparent;border:none;color:inherit}
+input,textarea,select{font-family:inherit;background:var(--ink);border:1px solid var(--line);color:var(--cream);border-radius:3px;padding:7px 10px;outline:none;font-size:13px}
+input:focus,textarea:focus,select:focus{border-color:var(--brass)}
+input[type=number],input[type=date]{font-family:var(--mono)}
+a{color:var(--brass)}a:hover{color:var(--amber)}
+
+.app{min-height:100dvh;display:grid;grid-template-rows:48px 1fr}
+header{display:flex;align-items:center;border-bottom:1px solid var(--line);background:var(--void-2);user-select:none}
+.brand{display:flex;align-items:center;gap:10px;padding:0 16px;height:100%;border-right:1px solid var(--line)}
+.brand .mark{width:28px;height:28px;background:linear-gradient(135deg,var(--brass),var(--ox-warm));border-radius:5px;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:15px;color:var(--void)}
+.brand .name{font-family:var(--serif);font-weight:600;font-size:14px;letter-spacing:0.02em}
+.brand .seal{font-family:var(--mono);font-size:9px;color:var(--cream-muted);letter-spacing:0.18em;text-transform:uppercase}
+
+.client-pill{display:flex;align-items:center;gap:8px;padding:0 14px;height:100%;border-right:1px solid var(--line);cursor:pointer;font-size:12px;color:var(--cream-dim)}
+.client-pill:hover{background:var(--ink);color:var(--cream)}
+.client-pill .who{font-family:var(--serif);font-size:13px;color:var(--brass)}
+.client-pill .meta{font-family:var(--mono);font-size:9px;color:var(--cream-muted);letter-spacing:0.1em;text-transform:uppercase}
+
+nav.tabs{display:flex;flex:1;overflow-x:auto;align-items:stretch}
+nav.tabs button{padding:0 14px;font-size:12px;color:var(--cream-dim);letter-spacing:0.04em;display:flex;align-items:center;gap:6px;border-right:1px solid var(--line-soft);height:100%;white-space:nowrap;border-top:2px solid transparent}
+nav.tabs button:hover{background:var(--ink);color:var(--cream)}
+nav.tabs button.active{background:var(--ink);color:var(--brass);border-top-color:var(--brass)}
+
+.tools-r{display:flex;align-items:center;gap:5px;padding:0 14px;height:100%;border-left:1px solid var(--line)}
+.tool-btn{padding:5px 11px;border-radius:3px;font-size:11px;color:var(--cream-dim);letter-spacing:0.06em;text-transform:uppercase;font-family:var(--mono);border:1px solid var(--line)}
+.tool-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--brass)}
+.tool-btn.primary{background:var(--brass);color:var(--void);border-color:var(--brass);font-weight:600}
+.tool-btn.primary:hover{background:var(--amber);border-color:var(--amber)}
+.tool-btn.t3{border-color:var(--blue);color:var(--blue)}
+
+.layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100dvh - 48px)}
+aside.sidebar{background:var(--void-2);border-right:1px solid var(--line);overflow-y:auto;padding:14px 12px 60px;display:flex;flex-direction:column;gap:10px}
+.sidebar h4{font-family:var(--mono);font-size:10px;color:var(--brass);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;padding:0 4px}
+.sidebar-search{display:flex;flex-direction:column;gap:6px}
+.sidebar-search input,.sidebar-search select{font-size:12px;padding:6px 8px}
+.client-list{display:flex;flex-direction:column;gap:3px}
+.client-card{padding:9px 11px;border-radius:3px;cursor:pointer;border:1px solid transparent;border-left:3px solid var(--line);background:var(--ink);transition:all 0.1s}
+.client-card:hover{background:var(--ink-2);border-left-color:var(--brass)}
+.client-card.active{background:var(--ink-2);border-left-color:var(--brass);border-color:var(--line)}
+.client-card .nm{font-family:var(--serif);font-size:13px;color:var(--cream);font-weight:600}
+.client-card .sub{font-family:var(--mono);font-size:10px;color:var(--cream-muted);letter-spacing:0.06em;margin-top:2px;display:flex;gap:6px;flex-wrap:wrap}
+.client-card .sub .tag{padding:1px 5px;border-radius:2px;background:var(--void);color:var(--cream-dim);font-size:9px}
+.client-card .sub .tag.due{background:var(--ox);color:var(--cream)}
+.client-card .sub .tag.amber{background:var(--amber);color:var(--void)}
+.client-card .sub .tag.species{color:var(--brass);border:1px solid var(--line)}
+.empty-state{padding:18px;text-align:center;color:var(--cream-muted);font-size:12px;font-style:italic}
+
+main{padding:18px 22px 60px;overflow-y:auto;max-width:1280px;margin:0 auto;width:100%}
+
+.disclaimer{background:rgba(168,65,42,0.15);border:1px solid var(--ox);border-left:3px solid var(--ox);border-radius:3px;padding:12px 16px;margin-bottom:18px;font-size:12px;color:var(--cream)}
+.disclaimer strong{color:var(--brass)}
+
+.section-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;gap:14px;flex-wrap:wrap}
+.section-h h2{font-family:var(--serif);font-size:18px;font-weight:600;letter-spacing:0.01em}
+.section-h .sub{font-family:var(--mono);font-size:11px;color:var(--cream-muted);letter-spacing:0.08em;text-transform:uppercase}
+.section-h .actions{display:flex;gap:6px;flex-wrap:wrap}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.card{background:var(--void-2);border:1px solid var(--line);border-radius:4px;padding:16px 18px}
+.card h3{font-family:var(--serif);font-size:14px;font-weight:600;margin-bottom:10px;color:var(--cream);letter-spacing:0.01em}
+.card h3 .meta{font-family:var(--mono);font-size:10px;color:var(--brass);letter-spacing:0.1em;margin-left:8px}
+
+.kpi{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--line-soft);font-size:13px}
+.kpi:last-child{border-bottom:none}
+.kpi .l{color:var(--cream-dim)}
+.kpi .v{font-family:var(--mono);color:var(--cream);font-weight:500}
+.kpi .v.green{color:var(--green)}.kpi .v.red{color:var(--red)}.kpi .v.amber{color:var(--amber)}.kpi .v.brass{color:var(--brass)}.kpi .v.blue{color:var(--blue)}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.row.r3{grid-template-columns:1fr 1fr 1fr}
+.row.r4{grid-template-columns:1fr 1fr 1fr 1fr}
+.field label{display:block;font-family:var(--mono);font-size:10px;color:var(--cream-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px}
+.field input,.field select,.field textarea{width:100%}
+.field .hint{font-size:10px;color:var(--cream-muted);margin-top:3px;font-family:var(--mono)}
+
+.btn{padding:7px 14px;border:1px solid var(--brass);border-radius:3px;font-size:12px;color:var(--cream);background:transparent;letter-spacing:0.04em;cursor:pointer}
+.btn:hover{border-color:var(--amber);color:var(--amber)}
+.btn.primary{background:var(--brass);color:var(--void);border-color:var(--brass);font-weight:600}
+.btn.primary:hover{background:var(--amber);border-color:var(--amber);color:var(--void)}
+.btn.danger{border-color:var(--ox);color:var(--ox-warm)}
+.btn.danger:hover{border-color:var(--red);color:var(--red);background:rgba(239,68,68,0.08)}
+.btn.sm{padding:4px 9px;font-size:11px}
+.btn.ghost{border-color:var(--line);color:var(--cream-dim)}
+.btn.ghost:hover{border-color:var(--brass);color:var(--brass)}
+
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line-soft);text-align:left;vertical-align:top}
+th{color:var(--brass);font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600}
+td.r{text-align:right;font-family:var(--mono)}
+td.mono{font-family:var(--mono);font-size:11px}
+tr.total td{font-weight:600;border-top:1px solid var(--brass);border-bottom:none;padding-top:10px}
+tr.total td.r{color:var(--brass)}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:var(--ink)}
+tr.warn{background:rgba(255,140,0,0.08)}
+tr.crit{background:rgba(168,65,42,0.12)}
+
+.tag{display:inline-block;padding:2px 7px;border-radius:11px;font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;border:1px solid var(--brass);color:var(--brass);margin-right:4px}
+.tag.amber{border-color:var(--amber);color:var(--amber)}
+.tag.green{border-color:var(--green);color:var(--green)}
+.tag.red{border-color:var(--red);color:var(--red)}
+.tag.blue{border-color:var(--blue);color:var(--blue)}
+.tag.dim{border-color:var(--line);color:var(--cream-muted)}
+.tag.ox{border-color:var(--ox);color:var(--ox-warm)}
+
+.chat{display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow-y:auto;padding:6px}
+.msg{padding:10px 14px;border-radius:6px;max-width:88%;font-size:13px;line-height:1.55;white-space:pre-wrap}
+.msg.user{background:var(--ink);align-self:flex-end;border-bottom-right-radius:2px}
+.msg.bot{background:var(--void-2);border:1px solid var(--line);border-left:2px solid var(--brass);align-self:flex-start;border-bottom-left-radius:2px}
+.msg.bot .src{font-family:var(--mono);font-size:10px;color:var(--cream-muted);letter-spacing:0.08em;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.chat-input{display:flex;gap:8px;margin-top:10px}
+.chat-input input{flex:1;padding:11px 14px}
+
+.tabs-inner{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tabs-inner button{padding:8px 14px;font-size:12px;color:var(--cream-dim);border-bottom:2px solid transparent;white-space:nowrap}
+.tabs-inner button.active{color:var(--brass);border-bottom-color:var(--brass)}
+.tabs-inner button:hover{color:var(--cream)}
+
+.note{background:var(--ink);padding:10px 12px;border-radius:3px;border-left:3px solid var(--brass);margin-bottom:8px}
+.note .meta{font-family:var(--mono);font-size:10px;color:var(--cream-muted);letter-spacing:0.06em;margin-bottom:4px}
+.note .body{font-size:13px;white-space:pre-wrap}
+.note .hash{font-family:var(--mono);font-size:9px;color:var(--cream-muted);margin-top:4px;letter-spacing:0.04em;word-break:break-all}
+
+.palette-bg,.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:flex-start;justify-content:center;padding-top:14vh;z-index:900;backdrop-filter:blur(4px)}
+.palette-bg.open,.modal-bg.open{display:flex}
+.modal-bg{align-items:center;padding:18px}
+.palette{background:var(--void-2);border:1px solid var(--brass);border-radius:5px;width:min(640px,90%);box-shadow:0 18px 50px rgba(0,0,0,0.7);overflow:hidden}
+.palette-hd{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+.palette-hd .glyph{font-family:var(--serif);font-size:18px;color:var(--brass)}
+.palette-hd input{flex:1;border:none;background:transparent;font-size:15px;padding:4px}
+.palette-bd{max-height:50vh;overflow:auto;padding:8px}
+.palette-row{padding:9px 12px;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px}
+.palette-row:hover{background:var(--ink)}
+.modal{background:var(--void-2);border:1px solid var(--brass);border-radius:4px;padding:22px;max-width:760px;width:100%;max-height:90vh;overflow:auto}
+.modal h2{font-family:var(--serif);font-size:17px;margin-bottom:14px}
+.modal .actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--brass);color:var(--void);padding:9px 18px;border-radius:3px;font-family:var(--mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;opacity:0;transition:all 0.22s;z-index:1100;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.onboard{max-width:580px;margin:5vh auto;padding:36px 32px;background:var(--void-2);border:1px solid var(--brass);border-radius:6px}
+.onboard h1{font-family:var(--serif);font-size:28px;color:var(--brass);margin-bottom:6px}
+.onboard .lead{color:var(--cream-dim);margin-bottom:20px;font-size:13px}
+.onboard .step{font-family:var(--mono);font-size:10px;color:var(--brass);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:8px}
+
+.drawer-toggle{display:none;padding:0 12px;height:100%;align-items:center;border-right:1px solid var(--line);cursor:pointer;color:var(--brass);font-size:18px}
+
+.weight-chart{height:140px;width:100%;margin-top:8px;background:var(--ink);border-radius:3px;padding:6px;position:relative}
+.weight-chart svg{width:100%;height:100%}
+
+.species-icon{display:inline-block;width:22px;text-align:center;font-size:14px}
+
+@media (max-width:880px){
+  .drawer-toggle{display:flex}
+  .layout{grid-template-columns:1fr}
+  aside.sidebar{position:fixed;top:48px;left:-320px;bottom:0;width:300px;z-index:50;transition:left 0.2s;box-shadow:0 0 30px rgba(0,0,0,0.6)}
+  aside.sidebar.open{left:0}
+  nav.tabs button{padding:0 10px;font-size:11px}
+  main{padding:14px 14px 50px}
+  .row,.row.r3,.row.r4{grid-template-columns:1fr}
+  .brand .seal{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+<header>
+  <button class="drawer-toggle" onclick="toggleDrawer()" title="animals">☰</button>
+  <div class="brand">
+    <div class="mark">◊</div>
+    <div>
+      <div class="name">FallVet</div>
+      <div class="seal">v1.0.0 · prime 947 · RCVS</div>
+    </div>
+  </div>
+  <div class="client-pill" id="animalPill" onclick="showApp('animals')" title="active animal">
+    <span class="who" id="apWho">— no animal —</span>
+    <span class="meta" id="apMeta"></span>
+  </div>
+  <nav class="tabs" id="tabNav"></nav>
+  <div class="tools-r">
+    <button class="tool-btn primary" onclick="openPalette()" title="ask · Ctrl+K">◊ ask</button>
+    <button class="tool-btn" id="tierBadge" onclick="openModal('settings')">T0</button>
+    <button class="tool-btn" onclick="openModal('settings')">⚙</button>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-search">
+    <h4>animals <span id="animalCount" style="float:right;color:var(--cream-muted);font-weight:normal"></span></h4>
+    <input type="text" id="animalFilter" placeholder="search name · microchip · owner" oninput="renderSidebar()">
+    <div class="row" style="gap:4px;margin:0">
+      <select id="filterSpecies" onchange="renderSidebar()" style="font-size:11px">
+        <option value="">all species</option>
+        <option value="dog">dog</option><option value="cat">cat</option>
+        <option value="rabbit">rabbit</option><option value="horse">horse</option>
+        <option value="bird">bird</option><option value="reptile">reptile</option>
+        <option value="rodent">rodent</option><option value="ferret">ferret</option>
+        <option value="other">other</option>
+      </select>
+      <select id="filterVet" onchange="renderSidebar()" style="font-size:11px"></select>
+    </div>
+    <div class="row" style="gap:4px;margin:0">
+      <select id="filterDue" onchange="renderSidebar()" style="font-size:11px">
+        <option value="">all status</option>
+        <option value="vacc-due">vacc due/overdue</option>
+        <option value="vacc-amber">vacc &lt;30d</option>
+        <option value="chronic">chronic conditions</option>
+        <option value="deceased">deceased</option>
+      </select>
+      <select id="filterAge" onchange="renderSidebar()" style="font-size:11px">
+        <option value="">all ages</option>
+        <option value="pup">&lt; 1 yr</option>
+        <option value="young">1-3 yr</option>
+        <option value="adult">3-8 yr</option>
+        <option value="senior">8+ yr</option>
+      </select>
+    </div>
+    <button class="btn sm primary" onclick="newAnimal()" style="width:100%;margin-top:4px">+ new animal</button>
+  </div>
+  <div class="client-list" id="animalList"></div>
+</aside>
+
+<main id="view"></main>
+</div>
+</div>
+
+<div class="palette-bg" id="paletteBg" onclick="if(event.target===this)closePalette()">
+  <div class="palette">
+    <div class="palette-hd">
+      <span class="glyph">◊</span>
+      <input type="text" id="paletteInput" placeholder="ask · type a question · /command" oninput="renderPalette()" onkeydown="paletteKey(event)" autocomplete="off">
+      <span style="font-family:var(--mono);font-size:10px;color:var(--cream-muted);letter-spacing:0.08em">esc</span>
+    </div>
+    <div class="palette-bd" id="paletteBd"></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+// FallVet v1.0.0 · sovereign UK veterinary practice management
+// RCVS-regulated · PSS-accredited · Schedule 2/3 CD register · VMR cascade
+// IDB primary · BroadcastChannel mesh (fall-vet + fall-signal) · KONOMI shim
+// Author: sjgant80@gmail.com · MIT · prime 947
+
+const TOOLNAME='fallvet';
+const VERSION='1.0.0';
+const PRIME=947;
+const DB_NAME='fallvet';
+const DB_VER=1;
+const STORES=['firms','clinicians','clients','animals','consults','prescriptions','controlledDrugRegister','vaccinationRecords','audit','settings'];
+
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uuid=()=>crypto.randomUUID().slice(0,12);
+const now=()=>Date.now();
+const fmtDate=ts=>{if(!ts)return'—';const d=new Date(ts);return d.toISOString().slice(0,10)};
+const fmtDT=ts=>{if(!ts)return'—';const d=new Date(ts);return d.toISOString().slice(0,16).replace('T',' ')};
+const fmtAge=dob=>{if(!dob)return'—';const d=new Date(dob);const ms=Date.now()-d.getTime();const yrs=ms/(365.25*86400000);if(yrs<1)return Math.round(yrs*12)+'mo';return yrs.toFixed(1)+'y'};
+const daysBetween=(a,b)=>Math.floor((b-a)/86400000);
+const addDays=(ts,d)=>ts+d*86400000;
+const speciesIcon=s=>({dog:'🐕',cat:'🐈',rabbit:'🐇',horse:'🐎',bird:'🦜',reptile:'🦎',rodent:'🐹',ferret:'🦦',other:'◊'})[s]||'◊';
+
+async function sha256(s){const buf=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('')}
+
+// ── IDB ──
+let DB=null;
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open(DB_NAME,DB_VER);
+    r.onupgradeneeded=e=>{
+      const db=e.target.result;
+      STORES.forEach(s=>{ if(!db.objectStoreNames.contains(s)){
+        if(s==='settings')db.createObjectStore(s,{keyPath:'k'});
+        else if(s==='audit')db.createObjectStore(s,{keyPath:'i',autoIncrement:true});
+        else db.createObjectStore(s,{keyPath:'id'});
+      }});
+    };
+    r.onsuccess=e=>{DB=e.target.result;res(DB)};
+    r.onerror=e=>rej(e.target.error);
+  });
+}
+function tx(store,mode='readonly'){return DB.transaction(store,mode).objectStore(store)}
+function idbGetAll(store){return new Promise((res,rej)=>{const r=tx(store).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
+function idbGet(store,key){return new Promise((res,rej)=>{const r=tx(store).get(key);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function idbPut(store,obj){return new Promise((res,rej)=>{const r=tx(store,'readwrite').put(obj);r.onsuccess=()=>res(obj);r.onerror=()=>rej(r.error)})}
+function idbDel(store,key){return new Promise((res,rej)=>{const r=tx(store,'readwrite').delete(key);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+function idbClear(store){return new Promise((res,rej)=>{const r=tx(store,'readwrite').clear();r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+async function settingGet(k,d){const r=await idbGet('settings',k);return r?r.v:d}
+async function settingSet(k,v){return idbPut('settings',{k,v})}
+
+// ── state ──
+const state={
+  firm:null, clinicians:[], clients:[], animals:[], consults:[],
+  prescriptions:[], cds:[], vaccs:[], audit:[],
+  activeAnimalId:null, activeTab:'dashboard', activeAnimalTab:'overview',
+  activeClinicianId:null, settings:{}, chat:[]
+};
+
+// ── audit ──
+let lastAuditHash='';
+async function auditPut(action,reasoning,payload){
+  const ts=now();
+  const adviserId=state.activeClinicianId||'';
+  const payloadStr=JSON.stringify(payload||{});
+  const docHash=await sha256(lastAuditHash+ts+action+adviserId+payloadStr);
+  const entry={ts,tool:TOOLNAME,clinicianId:adviserId,action,reasoning:reasoning||'',configVersion:TOOLNAME+'@'+VERSION,prevHash:lastAuditHash,docHash,payload:payload||{}};
+  await idbPut('audit',entry);
+  lastAuditHash=docHash;
+  state.audit.push(entry);
+}
+async function loadAudit(){
+  state.audit=await idbGetAll('audit');
+  if(state.audit.length)lastAuditHash=state.audit[state.audit.length-1].docHash;
+}
+
+// ── mesh ──
+let chVet=null,chSig=null;
+function broadcast(type,payload){try{if(chVet)chVet.postMessage({v:1,type,ts:now(),source:TOOLNAME,payload});if(chSig&&type.indexOf('sync')!==0)chSig.postMessage({v:1,tool:TOOLNAME,type,ts:now()})}catch(e){}}
+function meshInit(){
+  try{
+    chVet=new BroadcastChannel('fall-vet');
+    chVet.onmessage=async e=>{
+      const m=e.data||{};
+      if(m.source===TOOLNAME)return;
+      if(m.type==='sync.request'){
+        broadcast('sync.snapshot',{firm:state.firm,clinicians:state.clinicians,clients:state.clients,animals:state.animals,consults:state.consults});
+        return;
+      }
+      if(m.type==='sync.snapshot'&&m.payload){
+        const p=m.payload;
+        if(p.clients){for(const c of p.clients){const e2=await idbGet('clients',c.id);if(!e2||(c.updatedAt||0)>(e2.updatedAt||0)){await idbPut('clients',c)}}}
+        if(p.animals){for(const a of p.animals){const e2=await idbGet('animals',a.id);if(!e2||(a.updatedAt||0)>(e2.updatedAt||0)){await idbPut('animals',a)}}}
+        if(p.clinicians){for(const c of p.clinicians){const e2=await idbGet('clinicians',c.id);if(!e2||(c.updatedAt||0)>(e2.updatedAt||0)){await idbPut('clinicians',c)}}}
+        await loadAll();renderAll();
+        return;
+      }
+      if(m.type==='animal.created'||m.type==='animal.updated'){
+        if(m.payload&&m.payload.id){await idbPut('animals',m.payload);await loadAll();renderAll()}
+      }
+      if(m.type==='client.created'||m.type==='client.updated'){
+        if(m.payload&&m.payload.id){await idbPut('clients',m.payload);await loadAll();renderAll()}
+      }
+    };
+    setTimeout(()=>broadcast('sync.request',{}),350);
+  }catch(e){}
+  try{chSig=new BroadcastChannel('fall-signal')}catch(e){}
+}
+
+// ── loader ──
+async function loadAll(){
+  const firms=await idbGetAll('firms');state.firm=firms[0]||null;
+  state.clinicians=await idbGetAll('clinicians');
+  state.clients=await idbGetAll('clients');
+  state.animals=await idbGetAll('animals');
+  state.consults=await idbGetAll('consults');
+  state.prescriptions=await idbGetAll('prescriptions');
+  state.cds=await idbGetAll('controlledDrugRegister');
+  state.vaccs=await idbGetAll('vaccinationRecords');
+  state.settings.anthropicKey=await settingGet('anthropicKey','');
+  state.settings.openaiKey=await settingGet('openaiKey','');
+  state.settings.geminiKey=await settingGet('geminiKey','');
+  state.settings.openrouterKey=await settingGet('openrouterKey','');
+  state.settings.preferred=await settingGet('preferred','gemini');
+  state.activeClinicianId=await settingGet('activeClinicianId',state.clinicians[0]?state.clinicians[0].id:null);
+}
+
+// ── toasts/modals ──
+let toastT=null;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2000)}
+function openModal(kind,arg){ $('#modalBg').classList.add('open'); if(kind==='settings')modalSettings();else if(kind==='audit')modalAudit();else if(kind==='cdEntry')modalCDEntry(arg);else if(kind==='consult')modalConsult(arg);else if(kind==='presc')modalPresc(arg);else if(kind==='vacc')modalVacc(arg);else if(kind==='ahc')modalAHC(arg);else if(kind==='pss')modalPSS(arg) }
+function closeModal(){$('#modalBg').classList.remove('open')}
+
+// ── tab navigation ──
+const TABS=[
+  {id:'dashboard',label:'◊ dashboard'},
+  {id:'animals',label:'animals'},
+  {id:'consults',label:'consults'},
+  {id:'prescriptions',label:'Rx'},
+  {id:'cd-register',label:'CD register'},
+  {id:'vaccinations',label:'vaccinations'},
+  {id:'microchips',label:'microchips'},
+  {id:'ahc',label:'AHC'},
+  {id:'pss',label:'PSS evidence'},
+  {id:'clinicians',label:'vets'},
+  {id:'clients',label:'owners'},
+  {id:'qa',label:'Q&A'},
+  {id:'audit',label:'audit'}
+];
+function renderTabs(){
+  const nav=$('#tabNav');
+  nav.innerHTML=TABS.map(t=>'<button class="'+(state.activeTab===t.id?'active':'')+'" onclick="showApp(\''+t.id+'\')">'+esc(t.label)+'</button>').join('');
+}
+function showApp(id){state.activeTab=id;renderTabs();render()}
+function toggleDrawer(){$('#sidebar').classList.toggle('open')}
+
+// ── animal helpers ──
+function clientName(c){if(!c)return'—';const n=[c.firstName,c.lastName].filter(Boolean).join(' ');return n||'Unnamed'}
+function ownerOf(a){return state.clients.find(c=>c.id===a.clientId)}
+function vetById(id){return state.clinicians.find(c=>c.id===id)}
+function animalById(id){return state.animals.find(a=>a.id===id)}
+function nextVaccDue(a){if(!a.vaccinationHistory||!a.vaccinationHistory.length)return null;const sorted=a.vaccinationHistory.filter(v=>v.nextDueDate).sort((x,y)=>new Date(x.nextDueDate)-new Date(y.nextDueDate));return sorted[0]?sorted[0].nextDueDate:null}
+function vaccStatus(a){const due=nextVaccDue(a);if(!due)return{kind:'none',label:'—'};const d=new Date(due).getTime();const days=daysBetween(now(),d);if(days<0)return{kind:'overdue',label:'overdue '+(-days)+'d'};if(days<30)return{kind:'amber',label:'due '+days+'d'};return{kind:'ok',label:'due '+days+'d'}}
+
+// ── renderers ──
+function renderAll(){renderTabs();renderSidebar();renderAnimalPill();render()}
+function renderAnimalPill(){
+  const a=state.animals.find(x=>x.id===state.activeAnimalId);
+  $('#apWho').textContent=a?(speciesIcon(a.species)+' '+a.name):'— no animal —';
+  $('#apMeta').textContent=a?(a.breed+' · '+fmtAge(a.dob)):'';
+}
+function renderSidebar(){
+  const q=$('#animalFilter').value.toLowerCase();
+  const sp=$('#filterSpecies').value;
+  const vet=$('#filterVet').value;
+  const due=$('#filterDue').value;
+  const age=$('#filterAge').value;
+  const vetSel=$('#filterVet');
+  if(vetSel&&vetSel.options.length<=1){
+    vetSel.innerHTML='<option value="">all vets</option>'+state.clinicians.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('');
+  }
+  let list=state.animals.slice();
+  if(q)list=list.filter(a=>(a.name||'').toLowerCase().includes(q)||(a.microchipNo||'').toLowerCase().includes(q)||clientName(ownerOf(a)).toLowerCase().includes(q));
+  if(sp)list=list.filter(a=>a.species===sp);
+  if(vet)list=list.filter(a=>(a.primaryVetId||'')===vet);
+  if(due){
+    if(due==='vacc-due')list=list.filter(a=>{const s=vaccStatus(a);return s.kind==='overdue'});
+    if(due==='vacc-amber')list=list.filter(a=>{const s=vaccStatus(a);return s.kind==='amber'});
+    if(due==='chronic')list=list.filter(a=>(a.chronicConditions||[]).length>0);
+    if(due==='deceased')list=list.filter(a=>a.deceasedAt);
+  }
+  if(age){
+    list=list.filter(a=>{if(!a.dob)return false;const y=(now()-new Date(a.dob).getTime())/(365.25*86400000);
+      if(age==='pup')return y<1;if(age==='young')return y>=1&&y<3;if(age==='adult')return y>=3&&y<8;return y>=8});
+  }
+  list.sort((x,y)=>(y.updatedAt||0)-(x.updatedAt||0));
+  $('#animalCount').textContent=list.length+'/'+state.animals.length;
+  const html=list.length?list.map(a=>{
+    const o=ownerOf(a);
+    const vs=vaccStatus(a);
+    const dueTag=vs.kind==='overdue'?'<span class="tag due">'+vs.label+'</span>':(vs.kind==='amber'?'<span class="tag amber">'+vs.label+'</span>':'');
+    const decTag=a.deceasedAt?'<span class="tag" style="background:var(--ink);color:var(--cream-muted)">deceased</span>':'';
+    return '<div class="client-card '+(state.activeAnimalId===a.id?'active':'')+'" onclick="selectAnimal(\''+a.id+'\')">'+
+      '<div class="nm"><span class="species-icon">'+speciesIcon(a.species)+'</span> '+esc(a.name)+'</div>'+
+      '<div class="sub"><span class="tag species">'+esc(a.breed||a.species)+'</span><span>'+fmtAge(a.dob)+'</span><span>'+esc(clientName(o))+'</span>'+dueTag+decTag+'</div></div>';
+  }).join(''):'<div class="empty-state">no animals match</div>';
+  $('#animalList').innerHTML=html;
+}
+function selectAnimal(id){state.activeAnimalId=id;state.activeTab='animals';state.activeAnimalTab='overview';renderAll()}
+
+// ── views ──
+function render(){
+  const v=$('#view');
+  if(!state.firm){v.innerHTML=viewOnboard();return}
+  switch(state.activeTab){
+    case'dashboard':v.innerHTML=viewDashboard();break;
+    case'animals':v.innerHTML=viewAnimals();bindAnimalView();break;
+    case'consults':v.innerHTML=viewConsults();break;
+    case'prescriptions':v.innerHTML=viewPrescriptions();break;
+    case'cd-register':v.innerHTML=viewCDRegister();break;
+    case'vaccinations':v.innerHTML=viewVaccinations();break;
+    case'microchips':v.innerHTML=viewMicrochips();break;
+    case'ahc':v.innerHTML=viewAHC();break;
+    case'pss':v.innerHTML=viewPSS();break;
+    case'clinicians':v.innerHTML=viewClinicians();break;
+    case'clients':v.innerHTML=viewClients();break;
+    case'qa':v.innerHTML=viewQA();bindQA();break;
+    case'audit':v.innerHTML=viewAudit();break;
+    default:v.innerHTML='<p>unknown</p>';
+  }
+}
+
+function disclaimerBlock(){
+  return '<div class="disclaimer"><strong>FallVet</strong> is a tool for UK independent veterinary practices (RCVS-regulated, PSS-accredited). It assists with animal records, consult notes, prescription tracking, controlled drug register, and PSS evidence collection. It is <strong>not</strong> an X-ray PACS, lab integration, or insurance-claim portal. Sovereign — animal and client data never leaves the device unless explicitly shared.</div>';
+}
+
+// ── onboarding ──
+function viewOnboard(){
+  return '<div class="onboard">'+
+    '<div class="step">step 1 / 2 · practice</div>'+
+    '<h1>FallVet</h1>'+
+    '<p class="lead">sovereign UK veterinary practice management. one device, one practice, multi-vet. RCVS-regulated, PSS-accredited (Core / GP / Hospital). controlled-drug register, vaccination tracker, consult notes signed and append-only. data stays on this device.</p>'+
+    '<div class="row"><div class="field"><label>practice name *</label><input id="ob_name" placeholder="Mews Lane Veterinary Surgery"></div>'+
+    '<div class="field"><label>trading name</label><input id="ob_trading"></div></div>'+
+    '<div class="row r3"><div class="field"><label>RCVS practice reg no</label><input id="ob_rcvs" placeholder="9999"></div>'+
+    '<div class="field"><label>companies house no</label><input id="ob_ch"></div>'+
+    '<div class="field"><label>VAT no</label><input id="ob_vat"></div></div>'+
+    '<div class="row r3"><div class="field"><label>PSS level</label><select id="ob_pss"><option value="">— none —</option><option value="core">Core</option><option value="gp">General Practice</option><option value="hospital">Veterinary Hospital</option></select></div>'+
+    '<div class="field"><label>PSS species modules</label><input id="ob_pssMods" placeholder="small-animal, equine"></div>'+
+    '<div class="field"><label>4-year cycle ends</label><input id="ob_pssCycle" type="date"></div></div>'+
+    '<div class="row"><div class="field"><label>professional indemnity insurer</label><input id="ob_pi" placeholder="VDS"></div>'+
+    '<div class="field"><label>policy no · expires</label><input id="ob_pip" placeholder="VDS-12345 · 2026-12-31"></div></div>'+
+    '<div class="row"><div class="field"><label>address</label><input id="ob_addr1" placeholder="12 Mews Lane"></div>'+
+    '<div class="field"><label>city · postcode</label><input id="ob_addr2" placeholder="London · SW1A 1AA"></div></div>'+
+    '<div class="actions" style="margin-top:18px;justify-content:flex-end;display:flex;gap:8px"><button class="btn primary" onclick="obStep1()">next: lead vet →</button></div>'+
+  '</div>';
+}
+async function obStep1(){
+  const name=$('#ob_name').value.trim();if(!name){toast('practice name required');return}
+  const f={id:'fm_'+uuid(),createdAt:now(),updatedAt:now(),name,
+    tradingName:$('#ob_trading').value.trim(),rcvsRegNo:$('#ob_rcvs').value.trim(),
+    companiesHouseNo:$('#ob_ch').value.trim(),vatNumber:$('#ob_vat').value.trim(),
+    pssLevel:$('#ob_pss').value,pssSpeciesModules:$('#ob_pssMods').value.trim(),
+    pssCycleEnds:$('#ob_pssCycle').value,
+    piInsurer:$('#ob_pi').value.trim(),piPolicyExpiry:$('#ob_pip').value.trim(),
+    address:{line1:$('#ob_addr1').value.trim(),line2:$('#ob_addr2').value.trim()},
+    setupCompletedAt:null};
+  await idbPut('firms',f);state.firm=f;
+  await auditPut('firm.created','first-launch setup',{name});
+  $('#view').innerHTML=viewOnboardStep2();
+}
+function viewOnboardStep2(){
+  return '<div class="onboard">'+
+    '<div class="step">step 2 / 2 · lead vet (MRCVS)</div>'+
+    '<h1>first clinician</h1>'+
+    '<p class="lead">register the lead veterinary surgeon. RCVS reg no required. CPD is 35 hours per year averaged over a 3-year rolling cycle. controlled-drug authorisation allows Schedule 2/3 prescribing.</p>'+
+    '<div class="row"><div class="field"><label>full name *</label><input id="cv_name" placeholder="Dr Jane Smith"></div>'+
+    '<div class="field"><label>email</label><input id="cv_email"></div></div>'+
+    '<div class="row r3"><div class="field"><label>RCVS reg no *</label><input id="cv_rcvs" placeholder="999999"></div>'+
+    '<div class="field"><label>MRCVS</label><select id="cv_mrcvs"><option value="true" selected>yes</option><option value="false">no</option></select></div>'+
+    '<div class="field"><label>role</label><select id="cv_role"><option value="lead">Lead vet</option><option value="vet">Vet</option><option value="rvn">RVN</option><option value="vca">VCA</option><option value="admin">Practice mgr</option></select></div></div>'+
+    '<div class="row r3"><div class="field"><label>CPD hours (rolling 3-yr)</label><input id="cv_cpd" type="number" value="0"></div>'+
+    '<div class="field"><label>CPD year start</label><input id="cv_cpdStart" type="date"></div>'+
+    '<div class="field"><label>CD authorised</label><select id="cv_cd"><option value="true" selected>yes</option><option value="false">no</option></select></div></div>'+
+    '<div class="field"><label>prescription rights</label><input id="cv_rx" value="POM-V, POM-VPS, NFA-VPS, AVM-GSL"></div>'+
+    '<div class="actions" style="margin-top:18px;justify-content:space-between;display:flex"><button class="btn ghost" onclick="state.firm=null;render()">← back</button><button class="btn primary" onclick="obStep2()">finish setup →</button></div>'+
+  '</div>';
+}
+async function obStep2(){
+  const name=$('#cv_name').value.trim();if(!name){toast('name required');return}
+  const rcvs=$('#cv_rcvs').value.trim();if(!rcvs){toast('RCVS reg no required');return}
+  const c={id:'cn_'+uuid(),firmId:state.firm.id,createdAt:now(),updatedAt:now(),
+    name,email:$('#cv_email').value.trim(),rcvsRegNo:rcvs,
+    mrcvs:$('#cv_mrcvs').value==='true',role:$('#cv_role').value,
+    cpdHours:parseFloat($('#cv_cpd').value)||0,cpdYearStart:$('#cv_cpdStart').value,
+    controlledDrugAuthorised:$('#cv_cd').value==='true',
+    prescriptionRights:$('#cv_rx').value.split(',').map(x=>x.trim()).filter(Boolean),
+    status:'active',startedAt:now()};
+  await idbPut('clinicians',c);
+  state.firm.setupCompletedAt=now();state.firm.updatedAt=now();
+  await idbPut('firms',state.firm);
+  await auditPut('clinician.created','first vet on first-launch',{name,rcvs});
+  state.activeClinicianId=c.id;await settingSet('activeClinicianId',c.id);
+
+  // Demo seed: client + animal + consult + vaccination
+  const client={id:'cl_'+uuid(),firmId:state.firm.id,createdAt:now(),updatedAt:now(),
+    title:'Mrs',firstName:'DEMO',lastName:'Hartley',email:'demo@example.com',phone:'+44 7700 900000',
+    address:{line1:'1 Demo Way',postcode:'SW1A 1AA',country:'GB'},
+    accountStatus:'good',gdprConsentToContact:true,marketingOptIn:false,
+    petInsuranceProvider:'Petplan',insuranceClaimsHistory:[]};
+  await idbPut('clients',client);
+  const animal={id:'an_'+uuid(),firmId:state.firm.id,clientId:client.id,ts:now(),updatedAt:now(),deceasedAt:null,
+    name:'Bella',species:'dog',breed:'Cocker Spaniel',dob:'2021-04-15',sex:'female',neutered:true,
+    microchipNo:'900111000000001',microchipDate:'2021-06-01',microchipDB:'Petlog',
+    insurer:'Petplan',insurancePolicyNo:'PP-12345',primaryVetId:c.id,
+    vaccinationHistory:[{ts:now()-200*86400000,vaccine:'DHPPi+L4',batchNo:'V123A',expiresAt:'2027-03-01',byClinicianId:c.id,nextDueDate:fmtDate(addDays(now(),165))}],
+    allergies:[],chronicConditions:[],regularMedications:[],
+    weightHistory:[{ts:now()-90*86400000,kg:11.2,byClinicianId:c.id},{ts:now()-30*86400000,kg:11.6,byClinicianId:c.id}],
+    consults:[],cdAdministered:[],notes:'DEMO · overwrite me'};
+  await idbPut('animals',animal);
+  const consult={id:'cs_'+uuid(),firmId:state.firm.id,animalId:animal.id,clientId:client.id,clinicianId:c.id,
+    ts:now()-30*86400000,closedAt:now()-30*86400000+1800000,durationMin:30,
+    reason:'Annual booster + check-up',history:'No issues reported by owner. Eating, drinking normally.',
+    examination:'BAR. T 38.6°C. HR 90bpm. RR 22. MM pink, CRT <2s. Abdomen soft, non-painful. Heart NSR no murmurs.',
+    diagnosis:'Healthy adult dog, due booster.',plan:'Administer DHPPi+L4. Discuss flea/worm. Next vacc 12mo.',
+    prescriptions:[],procedures:['DHPPi+L4 vaccination'],
+    notes:[{ts:now()-30*86400000,by:c.id,body:'Booster given LHS scruff, batch V123A, expires 2027-03-01. No adverse reaction.',sha256:''}],
+    invoiceLines:[{desc:'Consult · standard',qty:1,unit:42.00,total:42.00},{desc:'DHPPi+L4 booster',qty:1,unit:38.50,total:38.50}],
+    status:'closed'};
+  consult.notes[0].sha256=await sha256(consult.notes[0].ts+c.id+consult.notes[0].body);
+  await idbPut('consults',consult);
+  animal.consults.push(consult.id);
+  await idbPut('animals',animal);
+  const vacc={id:'vc_'+uuid(),firmId:state.firm.id,animalId:animal.id,ts:consult.notes[0].ts,
+    vaccine:'DHPPi+L4',batchNo:'V123A',expiresAt:'2027-03-01',byClinicianId:c.id,
+    nextDueDate:fmtDate(addDays(now(),165)),consultId:consult.id};
+  await idbPut('vaccinationRecords',vacc);
+
+  await loadAll();renderAll();
+  state.activeTab='dashboard';renderTabs();render();
+  toast('practice ready · demo data seeded');
+  broadcast('firm.updated',state.firm);
+}
+
+// ── dashboard ──
+function viewDashboard(){
+  const f=state.firm;
+  const aTotal=state.animals.length;
+  const overdue=state.animals.filter(a=>vaccStatus(a).kind==='overdue').length;
+  const amber=state.animals.filter(a=>vaccStatus(a).kind==='amber').length;
+  const chronic=state.animals.filter(a=>(a.chronicConditions||[]).length>0).length;
+  const openCons=state.consults.filter(c=>c.status!=='closed').length;
+  const cdCount=state.cds.length;
+  const last30=state.consults.filter(c=>c.ts>now()-30*86400000).length;
+  return disclaimerBlock()+
+    '<div class="section-h"><div><h2>'+esc(f.name)+'</h2><div class="sub">RCVS '+esc(f.rcvsRegNo||'—')+' · PSS '+esc(f.pssLevel||'unaccredited')+' · '+state.clinicians.length+' clinician(s)</div></div></div>'+
+    '<div class="grid">'+
+      '<div class="card"><h3>animals</h3>'+
+        '<div class="kpi"><span class="l">total registered</span><span class="v brass">'+aTotal+'</span></div>'+
+        '<div class="kpi"><span class="l">vaccinations overdue</span><span class="v '+(overdue?'red':'green')+'">'+overdue+'</span></div>'+
+        '<div class="kpi"><span class="l">vaccinations due &lt; 30d</span><span class="v '+(amber?'amber':'green')+'">'+amber+'</span></div>'+
+        '<div class="kpi"><span class="l">chronic conditions</span><span class="v">'+chronic+'</span></div>'+
+      '</div>'+
+      '<div class="card"><h3>clinical activity</h3>'+
+        '<div class="kpi"><span class="l">consults · last 30d</span><span class="v brass">'+last30+'</span></div>'+
+        '<div class="kpi"><span class="l">consults open</span><span class="v '+(openCons?'amber':'')+'">'+openCons+'</span></div>'+
+        '<div class="kpi"><span class="l">prescriptions issued</span><span class="v">'+state.prescriptions.length+'</span></div>'+
+        '<div class="kpi"><span class="l">CD ledger entries</span><span class="v">'+cdCount+'</span></div>'+
+      '</div>'+
+      '<div class="card"><h3>compliance posture</h3>'+
+        '<div class="kpi"><span class="l">PSS level</span><span class="v brass">'+esc(f.pssLevel||'—')+'</span></div>'+
+        '<div class="kpi"><span class="l">PSS cycle ends</span><span class="v">'+esc(f.pssCycleEnds||'—')+'</span></div>'+
+        '<div class="kpi"><span class="l">PI insurer</span><span class="v">'+esc(f.piInsurer||'—')+'</span></div>'+
+        '<div class="kpi"><span class="l">audit chain</span><span class="v green">'+state.audit.length+' entries</span></div>'+
+      '</div>'+
+      '<div class="card"><h3>vets · CPD posture</h3>'+
+        state.clinicians.map(c=>'<div class="kpi"><span class="l">'+esc(c.name)+' <span class="tag dim" style="font-size:9px">'+esc(c.role||'vet')+'</span></span><span class="v '+(c.cpdHours>=35?'green':'amber')+'">'+c.cpdHours.toFixed(1)+' hr</span></div>').join('')+
+        '<div class="kpi"><span class="l">target</span><span class="v">35 hr/yr · 3-yr rolling</span></div>'+
+      '</div>'+
+      '<div class="card"><h3>vaccination critical list</h3>'+
+        (state.animals.filter(a=>{const s=vaccStatus(a);return s.kind==='overdue'||s.kind==='amber'}).slice(0,8).map(a=>{
+          const s=vaccStatus(a);
+          return '<div class="kpi"><span class="l" style="cursor:pointer;color:var(--cream)" onclick="selectAnimal(\''+a.id+'\')">'+speciesIcon(a.species)+' '+esc(a.name)+'</span><span class="v '+(s.kind==='overdue'?'red':'amber')+'">'+esc(s.label)+'</span></div>';
+        }).join('')||'<div class="empty-state">none amber/red</div>')+
+      '</div>'+
+      '<div class="card"><h3>quick actions</h3>'+
+        '<div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">'+
+          '<button class="btn sm" onclick="newAnimal()">+ new animal</button>'+
+          '<button class="btn sm" onclick="newConsult()">+ open consult</button>'+
+          '<button class="btn sm" onclick="openModal(\'cdEntry\')">+ CD register entry</button>'+
+          '<button class="btn sm" onclick="openModal(\'pss\')">+ PSS evidence</button>'+
+          '<button class="btn sm ghost" onclick="exportSnapshot()">export snapshot (JSON)</button>'+
+          '<button class="btn sm ghost" onclick="showApp(\'audit\')">audit chain</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+}
+
+// ── animals view ──
+function viewAnimals(){
+  const a=animalById(state.activeAnimalId);
+  if(!a){
+    return '<div class="section-h"><div><h2>animals</h2><div class="sub">select an animal from the sidebar · or create one</div></div><div class="actions"><button class="btn primary" onclick="newAnimal()">+ new animal</button></div></div>'+
+      '<div class="empty-state" style="padding:60px 20px">no animal selected</div>';
+  }
+  const o=ownerOf(a);
+  const subTabs=['overview','owner','vaccinations','conditions','medications','weight','consults','documents','microchip'];
+  return '<div class="section-h"><div><h2>'+speciesIcon(a.species)+' '+esc(a.name)+'</h2><div class="sub">'+esc(a.breed||a.species)+' · '+fmtAge(a.dob)+' · '+esc(a.sex||'?')+' · owner '+esc(clientName(o))+'</div></div>'+
+    '<div class="actions"><button class="btn sm" onclick="newConsult(\''+a.id+'\')">+ consult</button><button class="btn sm" onclick="openModal(\'vacc\',\''+a.id+'\')">+ vacc</button><button class="btn sm danger" onclick="markDeceased(\''+a.id+'\')">deceased</button></div></div>'+
+    '<div class="tabs-inner">'+subTabs.map(t=>'<button class="'+(state.activeAnimalTab===t?'active':'')+'" onclick="state.activeAnimalTab=\''+t+'\';render()">'+t+'</button>').join('')+'</div>'+
+    animalSubTab(a,o);
+}
+function animalSubTab(a,o){
+  switch(state.activeAnimalTab){
+    case'overview':return animalOverview(a,o);
+    case'owner':return animalOwner(a,o);
+    case'vaccinations':return animalVaccs(a);
+    case'conditions':return animalConditions(a);
+    case'medications':return animalMeds(a);
+    case'weight':return animalWeight(a);
+    case'consults':return animalConsultsTab(a);
+    case'documents':return animalDocs(a);
+    case'microchip':return animalChip(a);
+    default:return'';
+  }
+}
+function animalOverview(a,o){
+  const vs=vaccStatus(a);
+  return '<div class="grid">'+
+    '<div class="card"><h3>identity</h3>'+
+      '<div class="row"><div class="field"><label>name</label><input value="'+esc(a.name)+'" data-edit="name"></div>'+
+      '<div class="field"><label>species</label><select data-edit="species"><option '+(a.species==='dog'?'selected':'')+'>dog</option><option '+(a.species==='cat'?'selected':'')+'>cat</option><option '+(a.species==='rabbit'?'selected':'')+'>rabbit</option><option '+(a.species==='horse'?'selected':'')+'>horse</option><option '+(a.species==='bird'?'selected':'')+'>bird</option><option '+(a.species==='reptile'?'selected':'')+'>reptile</option><option '+(a.species==='rodent'?'selected':'')+'>rodent</option><option '+(a.species==='ferret'?'selected':'')+'>ferret</option><option '+(a.species==='other'?'selected':'')+'>other</option></select></div></div>'+
+      '<div class="row r3"><div class="field"><label>breed</label><input value="'+esc(a.breed||'')+'" data-edit="breed"></div>'+
+      '<div class="field"><label>sex</label><select data-edit="sex"><option value="" '+(!a.sex?'selected':'')+'>?</option><option value="male" '+(a.sex==='male'?'selected':'')+'>male</option><option value="female" '+(a.sex==='female'?'selected':'')+'>female</option></select></div>'+
+      '<div class="field"><label>neutered</label><select data-edit="neutered"><option value="false" '+(!a.neutered?'selected':'')+'>no</option><option value="true" '+(a.neutered?'selected':'')+'>yes</option></select></div></div>'+
+      '<div class="row"><div class="field"><label>date of birth</label><input type="date" value="'+esc(a.dob||'')+'" data-edit="dob"></div>'+
+      '<div class="field"><label>primary vet</label><select data-edit="primaryVetId">'+state.clinicians.map(c=>'<option value="'+c.id+'" '+(a.primaryVetId===c.id?'selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></div></div>'+
+      '<div class="row"><div class="field"><label>insurer</label><input value="'+esc(a.insurer||'')+'" data-edit="insurer"></div>'+
+      '<div class="field"><label>policy no</label><input value="'+esc(a.insurancePolicyNo||'')+'" data-edit="insurancePolicyNo"></div></div>'+
+      '<button class="btn primary sm" onclick="saveAnimalEdit(\''+a.id+'\')" style="margin-top:10px">save</button>'+
+    '</div>'+
+    '<div class="card"><h3>status</h3>'+
+      '<div class="kpi"><span class="l">vaccination</span><span class="v '+(vs.kind==='overdue'?'red':vs.kind==='amber'?'amber':'green')+'">'+esc(vs.label)+'</span></div>'+
+      '<div class="kpi"><span class="l">chronic conditions</span><span class="v">'+(a.chronicConditions||[]).length+'</span></div>'+
+      '<div class="kpi"><span class="l">regular meds</span><span class="v">'+(a.regularMedications||[]).length+'</span></div>'+
+      '<div class="kpi"><span class="l">consults</span><span class="v">'+(state.consults.filter(c=>c.animalId===a.id).length)+'</span></div>'+
+      '<div class="kpi"><span class="l">microchip</span><span class="v '+(a.microchipNo?'green':'amber')+'">'+(a.microchipNo?'registered':'missing')+'</span></div>'+
+      '<div class="kpi"><span class="l">last weight</span><span class="v">'+(a.weightHistory&&a.weightHistory.length?a.weightHistory[a.weightHistory.length-1].kg+'kg':'—')+'</span></div>'+
+      '<div class="kpi"><span class="l">registered</span><span class="v">'+fmtDate(a.ts)+'</span></div>'+
+    '</div>'+
+  '</div>';
+}
+function animalOwner(a,o){
+  if(!o)return '<div class="empty-state">no owner linked</div>';
+  return '<div class="card"><h3>owner · '+esc(clientName(o))+'</h3>'+
+    '<div class="row r3"><div class="field"><label>title</label><input value="'+esc(o.title||'')+'" id="o_title"></div>'+
+    '<div class="field"><label>first name</label><input value="'+esc(o.firstName||'')+'" id="o_first"></div>'+
+    '<div class="field"><label>last name</label><input value="'+esc(o.lastName||'')+'" id="o_last"></div></div>'+
+    '<div class="row"><div class="field"><label>email</label><input value="'+esc(o.email||'')+'" id="o_email"></div>'+
+    '<div class="field"><label>phone</label><input value="'+esc(o.phone||'')+'" id="o_phone"></div></div>'+
+    '<div class="row"><div class="field"><label>address line 1</label><input value="'+esc((o.address||{}).line1||'')+'" id="o_a1"></div>'+
+    '<div class="field"><label>postcode</label><input value="'+esc((o.address||{}).postcode||'')+'" id="o_pc"></div></div>'+
+    '<div class="row r3"><div class="field"><label>account status</label><select id="o_acc"><option '+(o.accountStatus==='good'?'selected':'')+'>good</option><option '+(o.accountStatus==='on-hold'?'selected':'')+'>on-hold</option><option '+(o.accountStatus==='closed'?'selected':'')+'>closed</option></select></div>'+
+    '<div class="field"><label>insurance provider</label><input value="'+esc(o.petInsuranceProvider||'')+'" id="o_ins"></div>'+
+    '<div class="field"><label>GDPR contact opt-in</label><select id="o_gdpr"><option value="true" '+(o.gdprConsentToContact?'selected':'')+'>yes</option><option value="false" '+(!o.gdprConsentToContact?'selected':'')+'>no</option></select></div></div>'+
+    '<button class="btn primary sm" onclick="saveOwner(\''+o.id+'\')" style="margin-top:10px">save owner</button>'+
+  '</div>';
+}
+async function saveOwner(id){
+  const o=await idbGet('clients',id);
+  o.title=$('#o_title').value;o.firstName=$('#o_first').value;o.lastName=$('#o_last').value;
+  o.email=$('#o_email').value;o.phone=$('#o_phone').value;
+  o.address=o.address||{};o.address.line1=$('#o_a1').value;o.address.postcode=$('#o_pc').value;
+  o.accountStatus=$('#o_acc').value;o.petInsuranceProvider=$('#o_ins').value;
+  o.gdprConsentToContact=$('#o_gdpr').value==='true';o.updatedAt=now();
+  await idbPut('clients',o);await loadAll();
+  await auditPut('client.updated','owner edit',{id});
+  broadcast('client.updated',o);
+  toast('owner saved');renderAll();
+}
+function animalVaccs(a){
+  const recs=state.vaccs.filter(v=>v.animalId===a.id).sort((x,y)=>y.ts-x.ts);
+  const next=nextVaccDue(a);
+  return '<div class="section-h"><div><h2 style="font-size:14px">vaccination history</h2><div class="sub">'+(next?'next due '+next:'no next-due set')+'</div></div><div class="actions"><button class="btn primary sm" onclick="openModal(\'vacc\',\''+a.id+'\')">+ vaccination</button></div></div>'+
+    (recs.length?'<table><thead><tr><th>date</th><th>vaccine</th><th>batch</th><th>expires</th><th>vet</th><th>next due</th><th></th></tr></thead><tbody>'+
+      recs.map(v=>'<tr><td>'+fmtDate(v.ts)+'</td><td>'+esc(v.vaccine)+'</td><td class="mono">'+esc(v.batchNo)+'</td><td>'+esc(v.expiresAt||'')+'</td><td>'+esc((vetById(v.byClinicianId)||{}).name||'—')+'</td><td>'+esc(v.nextDueDate||'')+'</td><td><button class="btn sm danger" onclick="delVacc(\''+v.id+'\')">×</button></td></tr>').join('')+
+      '</tbody></table>':'<div class="empty-state">no vaccinations recorded</div>');
+}
+function animalConditions(a){
+  const list=a.chronicConditions||[];
+  return '<div class="card"><h3>chronic conditions <button class="btn sm" style="float:right" onclick="addCondition(\''+a.id+'\')">+ add</button></h3>'+
+    (list.length?list.map((c,i)=>'<div class="note"><div class="meta">'+esc(c.diagnosedAt||'')+' · by '+esc((vetById(c.byClinicianId)||{}).name||'—')+'</div><div class="body"><strong>'+esc(c.condition)+'</strong> — '+esc(c.notes||'')+'</div><button class="btn sm danger" style="margin-top:6px" onclick="delCondition(\''+a.id+'\','+i+')">remove</button></div>').join(''):'<div class="empty-state">none</div>')+
+  '</div>'+
+  '<div class="card" style="margin-top:14px"><h3>allergies <button class="btn sm" style="float:right" onclick="addAllergy(\''+a.id+'\')">+ add</button></h3>'+
+    ((a.allergies||[]).length?(a.allergies||[]).map((al,i)=>'<div class="note"><div class="body">'+esc(al)+'</div><button class="btn sm danger" style="margin-top:6px" onclick="delAllergy(\''+a.id+'\','+i+')">×</button></div>').join(''):'<div class="empty-state">no known allergies</div>')+
+  '</div>';
+}
+function animalMeds(a){
+  const list=a.regularMedications||[];
+  return '<div class="card"><h3>regular medications <button class="btn sm" style="float:right" onclick="addMed(\''+a.id+'\')">+ add</button></h3>'+
+    (list.length?list.map((m,i)=>'<div class="note"><div class="meta">since '+esc(m.startedAt||'')+'</div><div class="body"><strong>'+esc(m.drug)+'</strong> · '+esc(m.dose)+' · '+esc(m.frequency)+'</div><button class="btn sm danger" style="margin-top:6px" onclick="delMed(\''+a.id+'\','+i+')">×</button></div>').join(''):'<div class="empty-state">none</div>')+
+  '</div>';
+}
+function animalWeight(a){
+  const hist=(a.weightHistory||[]).slice().sort((x,y)=>x.ts-y.ts);
+  const max=Math.max(0.1,...hist.map(w=>w.kg||0));
+  const min=Math.min(...hist.map(w=>w.kg||0),max);
+  const range=Math.max(0.5,max-min);
+  const W=600,H=120,PAD=20;
+  const pts=hist.length?hist.map((w,i)=>{const x=PAD+(hist.length>1?i/(hist.length-1):0.5)*(W-2*PAD);const y=H-PAD-((w.kg-min)/range)*(H-2*PAD);return [x,y]}):[];
+  const path=pts.length?'M '+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L '):'';
+  return '<div class="card"><h3>weight history <button class="btn sm" style="float:right" onclick="addWeight(\''+a.id+'\')">+ add reading</button></h3>'+
+    '<div class="weight-chart"><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+
+      (path?'<path d="'+path+'" stroke="var(--brass)" stroke-width="2" fill="none"/>'+pts.map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3" fill="var(--brass)"/>').join(''):'')+
+    '</svg></div>'+
+    (hist.length?'<table style="margin-top:10px"><thead><tr><th>date</th><th class="r">weight (kg)</th><th>by</th></tr></thead><tbody>'+
+      hist.slice().reverse().map(w=>'<tr><td>'+fmtDate(w.ts)+'</td><td class="r">'+w.kg+'</td><td>'+esc((vetById(w.byClinicianId)||{}).name||'—')+'</td></tr>').join('')+'</tbody></table>':'<div class="empty-state">no readings</div>')+
+  '</div>';
+}
+function animalConsultsTab(a){
+  const list=state.consults.filter(c=>c.animalId===a.id).sort((x,y)=>y.ts-x.ts);
+  return '<div class="section-h"><div><h2 style="font-size:14px">consult history</h2></div><div class="actions"><button class="btn primary sm" onclick="newConsult(\''+a.id+'\')">+ new consult</button></div></div>'+
+    (list.length?'<table><thead><tr><th>date</th><th>vet</th><th>reason</th><th>diagnosis</th><th>status</th><th></th></tr></thead><tbody>'+
+      list.map(c=>'<tr class="clickable" onclick="openModal(\'consult\',\''+c.id+'\')"><td>'+fmtDate(c.ts)+'</td><td>'+esc((vetById(c.clinicianId)||{}).name||'—')+'</td><td>'+esc(c.reason||'')+'</td><td>'+esc(c.diagnosis||'')+'</td><td><span class="tag '+(c.status==='closed'?'green':'amber')+'">'+esc(c.status||'open')+'</span></td><td><button class="btn sm ghost" onclick="event.stopPropagation();openModal(\'consult\',\''+c.id+'\')">open</button></td></tr>').join('')+
+      '</tbody></table>':'<div class="empty-state">no consults yet</div>');
+}
+function animalDocs(a){
+  return '<div class="empty-state" style="padding:36px">document storage uses the practice document mgmt system. FallVet records references only — no binary attachments stored here (sovereign-by-design).</div>';
+}
+function animalChip(a){
+  return '<div class="card"><h3>microchip · '+esc(a.species==='cat'?'mandatory England 10 June 2024':'mandatory England 2016 (dogs)')+'</h3>'+
+    '<div class="row r3"><div class="field"><label>microchip number</label><input value="'+esc(a.microchipNo||'')+'" id="mc_no"></div>'+
+    '<div class="field"><label>implanted date</label><input type="date" value="'+esc(a.microchipDate||'')+'" id="mc_dt"></div>'+
+    '<div class="field"><label>database</label><select id="mc_db"><option value="">— select —</option><option '+(a.microchipDB==='Petlog'?'selected':'')+'>Petlog</option><option '+(a.microchipDB==='MicrochipCentral'?'selected':'')+'>MicrochipCentral</option><option '+(a.microchipDB==='Identibase'?'selected':'')+'>Identibase</option><option '+(a.microchipDB==='Animal Microchips'?'selected':'')+'>Animal Microchips</option><option '+(a.microchipDB==='Smarttrac'?'selected':'')+'>Smarttrac</option><option '+(a.microchipDB==='other'?'selected':'')+'>other</option></select></div></div>'+
+    '<div class="field"><label>implanted by</label><select id="mc_by">'+state.clinicians.map(c=>'<option value="'+c.id+'" '+(a.microchipBy===c.id?'selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></div>'+
+    '<button class="btn primary sm" onclick="saveChip(\''+a.id+'\')" style="margin-top:10px">save</button>'+
+  '</div>';
+}
+async function saveChip(id){
+  const a=await idbGet('animals',id);
+  a.microchipNo=$('#mc_no').value;a.microchipDate=$('#mc_dt').value;
+  a.microchipDB=$('#mc_db').value;a.microchipBy=$('#mc_by').value;a.updatedAt=now();
+  await idbPut('animals',a);await auditPut('animal.microchip.updated','',{id});
+  broadcast('animal.updated',a);await loadAll();toast('microchip saved');renderAll();
+}
+function bindAnimalView(){}
+async function saveAnimalEdit(id){
+  const a=await idbGet('animals',id);
+  document.querySelectorAll('[data-edit]').forEach(el=>{
+    const k=el.dataset.edit;let v=el.value;
+    if(k==='neutered')v=v==='true';
+    a[k]=v;
+  });
+  a.updatedAt=now();
+  await idbPut('animals',a);
+  await auditPut('animal.updated','identity edit',{id});
+  broadcast('animal.updated',a);
+  await loadAll();toast('animal saved');renderAll();
+}
+async function markDeceased(id){
+  if(!confirm('Mark this animal as deceased? This is irreversible.'))return;
+  const a=await idbGet('animals',id);a.deceasedAt=now();a.updatedAt=now();
+  await idbPut('animals',a);await auditPut('animal.deceased','',{id});
+  broadcast('animal.deceased',a);await loadAll();renderAll();toast('marked deceased');
+}
+async function addCondition(id){
+  const cond=prompt('Condition (e.g. Atopic dermatitis)');if(!cond)return;
+  const notes=prompt('Notes (optional)')||'';
+  const a=await idbGet('animals',id);a.chronicConditions=a.chronicConditions||[];
+  a.chronicConditions.push({condition:cond,notes,diagnosedAt:fmtDate(now()),byClinicianId:state.activeClinicianId});
+  a.updatedAt=now();await idbPut('animals',a);
+  await auditPut('animal.condition.added',cond,{id});await loadAll();renderAll();
+}
+async function delCondition(id,i){
+  const a=await idbGet('animals',id);a.chronicConditions.splice(i,1);a.updatedAt=now();
+  await idbPut('animals',a);await loadAll();renderAll();
+}
+async function addAllergy(id){
+  const x=prompt('Allergy');if(!x)return;
+  const a=await idbGet('animals',id);a.allergies=a.allergies||[];a.allergies.push(x);a.updatedAt=now();
+  await idbPut('animals',a);await loadAll();renderAll();
+}
+async function delAllergy(id,i){
+  const a=await idbGet('animals',id);a.allergies.splice(i,1);a.updatedAt=now();
+  await idbPut('animals',a);await loadAll();renderAll();
+}
+async function addMed(id){
+  const drug=prompt('Drug');if(!drug)return;
+  const dose=prompt('Dose (e.g. 5mg)')||'';
+  const freq=prompt('Frequency (e.g. SID, BID)')||'';
+  const a=await idbGet('animals',id);a.regularMedications=a.regularMedications||[];
+  a.regularMedications.push({drug,dose,frequency:freq,startedAt:fmtDate(now())});
+  a.updatedAt=now();await idbPut('animals',a);await loadAll();renderAll();
+}
+async function delMed(id,i){
+  const a=await idbGet('animals',id);a.regularMedications.splice(i,1);a.updatedAt=now();
+  await idbPut('animals',a);await loadAll();renderAll();
+}
+async function addWeight(id){
+  const kg=parseFloat(prompt('Weight (kg)'));if(!kg||kg<=0)return;
+  const a=await idbGet('animals',id);a.weightHistory=a.weightHistory||[];
+  a.weightHistory.push({ts:now(),kg,byClinicianId:state.activeClinicianId});a.updatedAt=now();
+  await idbPut('animals',a);await loadAll();renderAll();
+}
+async function delVacc(id){
+  if(!confirm('Delete vaccination record?'))return;
+  await idbDel('vaccinationRecords',id);await loadAll();renderAll();
+}
+
+async function newAnimal(){
+  if(!state.clients.length){
+    if(!confirm('No owners on file. Create a new owner first?'))return;
+    return newClientThenAnimal();
+  }
+  const name=prompt('Animal name');if(!name)return;
+  const ownerOpts=state.clients.map((c,i)=>(i+1)+'. '+clientName(c)).join('\n');
+  const sel=prompt('Owner (number):\n'+ownerOpts);if(!sel)return;
+  const idx=parseInt(sel)-1;if(isNaN(idx)||idx<0||idx>=state.clients.length){toast('invalid');return}
+  const species=prompt('Species (dog/cat/rabbit/horse/bird/reptile/rodent/ferret/other)','dog')||'dog';
+  const a={id:'an_'+uuid(),firmId:state.firm.id,clientId:state.clients[idx].id,ts:now(),updatedAt:now(),deceasedAt:null,
+    name,species,breed:'',dob:'',sex:'',neutered:false,
+    microchipNo:'',insurer:'',insurancePolicyNo:'',primaryVetId:state.activeClinicianId,
+    vaccinationHistory:[],allergies:[],chronicConditions:[],regularMedications:[],
+    weightHistory:[],consults:[],cdAdministered:[]};
+  await idbPut('animals',a);await auditPut('animal.created',name,{id:a.id});
+  broadcast('animal.created',a);await loadAll();selectAnimal(a.id);toast('animal created');
+}
+async function newClientThenAnimal(){
+  const first=prompt('Owner first name');if(!first)return;
+  const last=prompt('Owner last name');if(!last)return;
+  const c={id:'cl_'+uuid(),firmId:state.firm.id,createdAt:now(),updatedAt:now(),
+    title:'',firstName:first,lastName:last,email:'',phone:'',
+    address:{line1:'',postcode:'',country:'GB'},
+    accountStatus:'good',gdprConsentToContact:false};
+  await idbPut('clients',c);broadcast('client.created',c);await loadAll();
+  await newAnimal();
+}
+
+// ── consults ──
+function viewConsults(){
+  const list=state.consults.slice().sort((x,y)=>y.ts-x.ts);
+  return '<div class="section-h"><div><h2>consults</h2><div class="sub">'+list.length+' total · '+state.consults.filter(c=>c.status!=='closed').length+' open</div></div>'+
+    '<div class="actions"><button class="btn primary" onclick="newConsult()">+ new consult</button></div></div>'+
+    (list.length?'<table><thead><tr><th>date</th><th>animal</th><th>owner</th><th>vet</th><th>reason</th><th>status</th><th></th></tr></thead><tbody>'+
+      list.map(c=>{const a=animalById(c.animalId);const o=ownerOf(a||{});
+        return '<tr class="clickable" onclick="openModal(\'consult\',\''+c.id+'\')"><td>'+fmtDate(c.ts)+'</td><td>'+(a?speciesIcon(a.species)+' '+esc(a.name):'—')+'</td><td>'+esc(clientName(o))+'</td><td>'+esc((vetById(c.clinicianId)||{}).name||'—')+'</td><td>'+esc(c.reason||'')+'</td><td><span class="tag '+(c.status==='closed'?'green':'amber')+'">'+esc(c.status||'open')+'</span></td><td><button class="btn sm ghost">open</button></td></tr>'}).join('')+
+      '</tbody></table>':'<div class="empty-state">no consults yet</div>');
+}
+async function newConsult(animalId){
+  if(!animalId){
+    if(!state.animals.length){toast('no animals registered');return}
+    const opts=state.animals.map((a,i)=>(i+1)+'. '+a.name+' ('+clientName(ownerOf(a))+')').join('\n');
+    const sel=prompt('Animal (number):\n'+opts);if(!sel)return;
+    const idx=parseInt(sel)-1;if(isNaN(idx)||idx<0||idx>=state.animals.length){toast('invalid');return}
+    animalId=state.animals[idx].id;
+  }
+  const a=animalById(animalId);if(!a){toast('animal not found');return}
+  const reason=prompt('Reason for consult')||'';
+  const c={id:'cs_'+uuid(),firmId:state.firm.id,animalId,clientId:a.clientId,clinicianId:state.activeClinicianId,
+    ts:now(),durationMin:0,reason,history:'',examination:'',diagnosis:'',plan:'',
+    prescriptions:[],procedures:[],notes:[],invoiceLines:[],status:'open',closedAt:null};
+  await idbPut('consults',c);
+  a.consults=a.consults||[];a.consults.push(c.id);a.updatedAt=now();await idbPut('animals',a);
+  await auditPut('consult.opened',reason,{id:c.id,animalId});
+  broadcast('consult.opened',c);await loadAll();openModal('consult',c.id);
+}
+async function modalConsult(id){
+  const c=await idbGet('consults',id);if(!c){closeModal();return}
+  const a=animalById(c.animalId);
+  $('#modalContent').innerHTML='<h2>consult · '+(a?speciesIcon(a.species)+' '+esc(a.name):'—')+' · '+fmtDT(c.ts)+'</h2>'+
+    '<div class="sub" style="font-family:var(--mono);font-size:11px;color:var(--cream-muted);margin-bottom:12px">vet: '+esc((vetById(c.clinicianId)||{}).name||'—')+' · status '+esc(c.status)+'</div>'+
+    '<div class="row r3"><div class="field"><label>reason</label><input id="cs_reason" value="'+esc(c.reason||'')+'"></div>'+
+    '<div class="field"><label>duration (min)</label><input id="cs_dur" type="number" value="'+(c.durationMin||0)+'"></div>'+
+    '<div class="field"><label>vet</label><select id="cs_vet">'+state.clinicians.map(x=>'<option value="'+x.id+'" '+(c.clinicianId===x.id?'selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div></div>'+
+    '<div class="field"><label>history</label><textarea id="cs_hist" rows="2">'+esc(c.history||'')+'</textarea></div>'+
+    '<div class="field" style="margin-top:6px"><label>examination findings</label><textarea id="cs_exam" rows="3">'+esc(c.examination||'')+'</textarea></div>'+
+    '<div class="field" style="margin-top:6px"><label>diagnosis</label><textarea id="cs_dx" rows="2">'+esc(c.diagnosis||'')+'</textarea></div>'+
+    '<div class="field" style="margin-top:6px"><label>plan</label><textarea id="cs_plan" rows="2">'+esc(c.plan||'')+'</textarea></div>'+
+    '<div class="field" style="margin-top:6px"><label>procedures (comma-sep)</label><input id="cs_proc" value="'+esc((c.procedures||[]).join(', '))+'"></div>'+
+    '<h3 style="margin:14px 0 8px;font-family:var(--serif);font-size:14px;color:var(--brass)">notes · append-only · signed (RCVS Code 6.1)</h3>'+
+    ((c.notes||[]).length?(c.notes||[]).map(n=>'<div class="note"><div class="meta">'+fmtDT(n.ts)+' · '+esc((vetById(n.by)||{}).name||'—')+'</div><div class="body">'+esc(n.body)+'</div><div class="hash">sha256 '+esc(n.sha256)+'</div></div>').join(''):'<div class="empty-state">no notes</div>')+
+    '<div class="row" style="margin-top:10px"><div class="field"><label>add note</label><textarea id="cs_newNote" rows="2" placeholder="append signed clinical note..."></textarea></div></div>'+
+    '<button class="btn sm" onclick="addConsultNote(\''+c.id+'\')">+ append signed note</button>'+
+    '<h3 style="margin:14px 0 8px;font-family:var(--serif);font-size:14px;color:var(--brass)">prescriptions</h3>'+
+    ((c.prescriptions||[]).length?'<table><thead><tr><th>drug</th><th>dose</th><th>freq</th><th>dur</th><th>batch</th><th>withdrawal</th></tr></thead><tbody>'+(c.prescriptions||[]).map(p=>'<tr><td>'+esc(p.drug)+'</td><td>'+esc(p.dose)+'</td><td>'+esc(p.frequency)+'</td><td>'+esc(p.duration)+'</td><td class="mono">'+esc(p.batchNo)+'</td><td>'+esc(p.withdrawalPeriod||'—')+'</td></tr>').join('')+'</tbody></table>':'<div class="empty-state">none</div>')+
+    '<button class="btn sm" style="margin-top:6px" onclick="closeModal();openModal(\'presc\',\''+c.id+'\')">+ prescription</button>'+
+    '<h3 style="margin:14px 0 8px;font-family:var(--serif);font-size:14px;color:var(--brass)">invoice lines</h3>'+
+    ((c.invoiceLines||[]).length?'<table><thead><tr><th>desc</th><th class="r">qty</th><th class="r">unit £</th><th class="r">total £</th></tr></thead><tbody>'+(c.invoiceLines||[]).map(l=>'<tr><td>'+esc(l.desc)+'</td><td class="r">'+l.qty+'</td><td class="r">'+(l.unit||0).toFixed(2)+'</td><td class="r">'+(l.total||0).toFixed(2)+'</td></tr>').join('')+'<tr class="total"><td colspan="3" class="r">total</td><td class="r">£'+(c.invoiceLines||[]).reduce((a,b)=>a+(b.total||0),0).toFixed(2)+'</td></tr></tbody></table>':'<div class="empty-state">no invoice lines</div>')+
+    '<button class="btn sm" style="margin-top:6px" onclick="addInvoiceLine(\''+c.id+'\')">+ invoice line</button>'+
+    '<div class="actions"><button class="btn ghost" onclick="closeModal()">close</button><button class="btn" onclick="saveConsult(\''+c.id+'\')">save</button>'+(c.status!=='closed'?'<button class="btn primary" onclick="closeConsult(\''+c.id+'\')">close consult</button>':'')+'</div>';
+}
+async function addConsultNote(id){
+  const body=$('#cs_newNote').value.trim();if(!body){toast('empty note');return}
+  const c=await idbGet('consults',id);
+  const ts=now();const h=await sha256(ts+state.activeClinicianId+body+(c.notes&&c.notes.length?c.notes[c.notes.length-1].sha256:''));
+  c.notes=c.notes||[];c.notes.push({ts,by:state.activeClinicianId,body,sha256:h});
+  await idbPut('consults',c);await auditPut('consult.note.appended','signed note',{id,hash:h});
+  await loadAll();modalConsult(id);
+}
+async function saveConsult(id){
+  const c=await idbGet('consults',id);
+  c.reason=$('#cs_reason').value;c.durationMin=parseInt($('#cs_dur').value)||0;
+  c.clinicianId=$('#cs_vet').value;c.history=$('#cs_hist').value;
+  c.examination=$('#cs_exam').value;c.diagnosis=$('#cs_dx').value;c.plan=$('#cs_plan').value;
+  c.procedures=$('#cs_proc').value.split(',').map(x=>x.trim()).filter(Boolean);
+  await idbPut('consults',c);await auditPut('consult.updated','',{id});
+  broadcast('consult.updated',c);await loadAll();toast('saved');modalConsult(id);
+}
+async function closeConsult(id){
+  const c=await idbGet('consults',id);c.status='closed';c.closedAt=now();
+  await idbPut('consults',c);await auditPut('consult.closed','',{id});
+  broadcast('consult.closed',c);await loadAll();toast('consult closed');closeModal();render();
+}
+async function addInvoiceLine(id){
+  const desc=prompt('Description');if(!desc)return;
+  const qty=parseFloat(prompt('Qty','1'))||1;
+  const unit=parseFloat(prompt('Unit price £'))||0;
+  const c=await idbGet('consults',id);c.invoiceLines=c.invoiceLines||[];
+  c.invoiceLines.push({desc,qty,unit,total:qty*unit});
+  await idbPut('consults',c);await loadAll();modalConsult(id);
+}
+
+// ── prescriptions ──
+function viewPrescriptions(){
+  const list=state.prescriptions.slice().sort((x,y)=>y.ts-x.ts);
+  return '<div class="section-h"><div><h2>prescriptions</h2><div class="sub">'+list.length+' issued · cascade off-label tracked under VMR 2013</div></div></div>'+
+    (list.length?'<table><thead><tr><th>date</th><th>animal</th><th>drug</th><th>dose · freq · dur</th><th>batch · expires</th><th>vet</th><th>cascade</th><th>withdrawal</th></tr></thead><tbody>'+
+      list.map(p=>{const a=animalById(p.animalId);
+        return '<tr><td>'+fmtDate(p.ts)+'</td><td>'+(a?speciesIcon(a.species)+' '+esc(a.name):'—')+'</td><td><strong>'+esc(p.drug)+'</strong> · '+esc(p.formulation||'')+'</td><td class="mono">'+esc(p.dose)+' · '+esc(p.frequency)+' · '+esc(p.duration)+'</td><td class="mono">'+esc(p.batchNo)+' · '+esc(p.expiresAt||'')+'</td><td>'+esc((vetById(p.byClinicianId)||{}).name||'—')+'</td><td>'+(p.cascadeOffLabel?'<span class="tag amber">off-label</span>':'<span class="tag green">on-label</span>')+'</td><td>'+esc(p.withdrawalPeriod||'—')+'</td></tr>';
+      }).join('')+
+      '</tbody></table>':'<div class="empty-state">no prescriptions</div>');
+}
+async function modalPresc(consultId){
+  $('#modalContent').innerHTML='<h2>new prescription</h2>'+
+    '<div class="row"><div class="field"><label>drug *</label><input id="rx_drug" placeholder="Metacam"></div>'+
+    '<div class="field"><label>formulation</label><input id="rx_form" placeholder="1.5mg/ml oral susp"></div></div>'+
+    '<div class="row r3"><div class="field"><label>dose *</label><input id="rx_dose" placeholder="0.1mg/kg"></div>'+
+    '<div class="field"><label>frequency *</label><input id="rx_freq" placeholder="SID"></div>'+
+    '<div class="field"><label>duration *</label><input id="rx_dur" placeholder="5 days"></div></div>'+
+    '<div class="row r3"><div class="field"><label>batch no *</label><input id="rx_batch"></div>'+
+    '<div class="field"><label>expires</label><input id="rx_exp" type="date"></div>'+
+    '<div class="field"><label>category</label><select id="rx_cat"><option>POM-V</option><option>POM-VPS</option><option>NFA-VPS</option><option>AVM-GSL</option></select></div></div>'+
+    '<div class="row"><div class="field"><label>cascade off-label use?</label><select id="rx_casc" onchange="document.getElementById(\'rx_cascReason\').style.display=this.value===\'true\'?\'block\':\'none\'"><option value="false">no — licensed UK vet med</option><option value="true">yes — cascade (no licensed UK vet med)</option></select></div>'+
+    '<div class="field"><label>withdrawal period (food-producing only)</label><input id="rx_with" placeholder="e.g. milk 7d, meat 28d"></div></div>'+
+    '<div class="field" id="rx_cascReason" style="display:none;margin-top:6px"><label>cascade reason (VMR 2013 documentation required)</label><textarea id="rx_reason" rows="2" placeholder="No licensed UK veterinary medicine available for this indication / species..."></textarea></div>'+
+    '<div class="actions"><button class="btn ghost" onclick="closeModal()">cancel</button><button class="btn primary" onclick="savePresc(\''+(consultId||'')+'\')">issue prescription</button></div>';
+}
+async function savePresc(consultId){
+  const drug=$('#rx_drug').value.trim();if(!drug){toast('drug required');return}
+  let animalId=null,clientId=null;
+  if(consultId){const c=await idbGet('consults',consultId);animalId=c.animalId;clientId=c.clientId}
+  if(!animalId){
+    if(!state.animals.length){toast('no animals');return}
+    const opts=state.animals.map((a,i)=>(i+1)+'. '+a.name).join('\n');
+    const sel=prompt('Animal:\n'+opts);if(!sel)return;
+    const idx=parseInt(sel)-1;if(isNaN(idx)){toast('invalid');return}
+    animalId=state.animals[idx].id;clientId=state.animals[idx].clientId;
+  }
+  const p={id:'rx_'+uuid(),firmId:state.firm.id,animalId,clientId,consultId:consultId||null,
+    ts:now(),byClinicianId:state.activeClinicianId,
+    drug,formulation:$('#rx_form').value,dose:$('#rx_dose').value,frequency:$('#rx_freq').value,
+    duration:$('#rx_dur').value,batchNo:$('#rx_batch').value,expiresAt:$('#rx_exp').value,
+    category:$('#rx_cat').value,
+    cascadeOffLabel:$('#rx_casc').value==='true',cascadeReason:$('#rx_reason')?$('#rx_reason').value:'',
+    withdrawalPeriod:$('#rx_with').value};
+  await idbPut('prescriptions',p);
+  if(consultId){const c=await idbGet('consults',consultId);c.prescriptions=c.prescriptions||[];c.prescriptions.push({drug:p.drug,formulation:p.formulation,dose:p.dose,frequency:p.frequency,duration:p.duration,batchNo:p.batchNo,expiresAt:p.expiresAt,withdrawalPeriod:p.withdrawalPeriod,cascadeOffLabel:p.cascadeOffLabel});await idbPut('consults',c)}
+  await auditPut('prescription.issued',drug+(p.cascadeOffLabel?' · cascade':''),{id:p.id});
+  broadcast('prescription.issued',p);await loadAll();toast('prescription issued');
+  if(consultId)openModal('consult',consultId);else{closeModal();render()}
+}
+
+// ── controlled drug register ──
+function viewCDRegister(){
+  const list=state.cds.slice().sort((x,y)=>y.ts-x.ts);
+  // stock balance per drug
+  const stock={};
+  state.cds.slice().sort((x,y)=>x.ts-y.ts).forEach(e=>{
+    const k=e.drug+'|'+e.strength;
+    if(!stock[k])stock[k]={drug:e.drug,strength:e.strength,balance:0,unit:e.unit||'mg'};
+    if(e.entryType==='received')stock[k].balance+=parseFloat(e.amount||0);
+    else if(e.entryType==='dispensed'||e.entryType==='destroyed')stock[k].balance-=parseFloat(e.amount||0);
+  });
+  return '<div class="section-h"><div><h2>controlled drug register</h2><div class="sub">Schedule 2 &amp; 3 · Misuse of Drugs Regs 2001 · VMR 2013 · two-witness rule for destruction</div></div>'+
+    '<div class="actions"><button class="btn primary" onclick="openModal(\'cdEntry\')">+ ledger entry</button></div></div>'+
+    '<div class="card" style="margin-bottom:14px"><h3>current stock balances</h3>'+
+      (Object.keys(stock).length?'<table><thead><tr><th>drug</th><th>strength</th><th class="r">balance</th></tr></thead><tbody>'+Object.values(stock).map(s=>'<tr><td><strong>'+esc(s.drug)+'</strong></td><td>'+esc(s.strength||'')+'</td><td class="r '+(s.balance<0?'red':'')+'">'+s.balance.toFixed(2)+' '+esc(s.unit)+'</td></tr>').join('')+'</tbody></table>':'<div class="empty-state">no entries</div>')+
+    '</div>'+
+    '<div class="card"><h3>daily ledger · most recent first</h3>'+
+    (list.length?'<table><thead><tr><th>date</th><th>type</th><th>drug</th><th>amt</th><th>animal</th><th>Rx · supplier · reason</th><th>auth / witnesses</th><th>balance ref</th></tr></thead><tbody>'+
+      list.map(e=>{const a=animalById(e.animalId);
+        const witHtml=e.entryType==='received'?esc((vetById(e.authSig)||{}).name||e.authSig||'—'):(e.entryType==='dispensed'?'<div class="mono" style="font-size:10px">'+esc((vetById(e.witness1)||{}).name||'')+'</div><div class="mono" style="font-size:10px">'+esc((vetById(e.witness2)||{}).name||'')+'</div>':'<div class="mono" style="font-size:10px">'+esc((vetById(e.witness1)||{}).name||'')+'</div><div class="mono" style="font-size:10px">'+esc((vetById(e.witness2)||{}).name||'')+'</div>');
+        const ctx=e.entryType==='received'?esc(e.supplier||'')+' · inv '+esc(e.invoiceNo||'')+' · batch '+esc(e.batchNo||''):(e.entryType==='dispensed'?'Rx '+esc(e.rxId||''):'reason: '+esc(e.destroyedReason||'')+' · method: '+esc(e.destroyedMethod||''));
+        return '<tr class="'+(e.entryType==='destroyed'?'crit':e.entryType==='received'?'':'warn')+'"><td>'+fmtDate(e.ts)+'</td><td><span class="tag '+(e.entryType==='received'?'green':e.entryType==='dispensed'?'amber':'red')+'">'+esc(e.entryType)+'</span></td><td><strong>'+esc(e.drug)+'</strong><div class="mono" style="font-size:10px">'+esc(e.strength||'')+'</div></td><td class="r">'+(parseFloat(e.amount||0)).toFixed(2)+' '+esc(e.unit||'mg')+'</td><td>'+(a?speciesIcon(a.species)+' '+esc(a.name):'—')+'</td><td>'+ctx+'</td><td>'+witHtml+'</td><td class="mono" style="font-size:10px">'+esc(e.id.slice(-6))+'</td></tr>';
+      }).join('')+'</tbody></table>':'<div class="empty-state">no ledger entries</div>')+
+    '</div>';
+}
+async function modalCDEntry(){
+  $('#modalContent').innerHTML='<h2>controlled drug · ledger entry</h2>'+
+    '<p style="font-size:12px;color:var(--cream-dim);margin-bottom:10px">Schedule 2 (e.g. methadone, fentanyl, pethidine) and Schedule 3 drugs require statutory register entries. Destruction requires <strong>two witnesses</strong> (Misuse of Drugs Regs 2001 r.27).</p>'+
+    '<div class="row"><div class="field"><label>entry type *</label><select id="cd_type" onchange="cdEntryToggle()"><option value="received">received (purchase)</option><option value="dispensed">dispensed</option><option value="destroyed">destroyed</option></select></div>'+
+    '<div class="field"><label>date</label><input id="cd_date" type="date" value="'+fmtDate(now())+'"></div></div>'+
+    '<div class="row r3"><div class="field"><label>drug *</label><input id="cd_drug" placeholder="Methadone"></div>'+
+    '<div class="field"><label>strength</label><input id="cd_str" placeholder="10mg/ml"></div>'+
+    '<div class="field"><label>schedule</label><select id="cd_sched"><option value="2">Schedule 2</option><option value="3">Schedule 3</option></select></div></div>'+
+    '<div class="row r3"><div class="field"><label>amount *</label><input id="cd_amt" type="number" step="0.01" placeholder="10"></div>'+
+    '<div class="field"><label>unit</label><select id="cd_unit"><option>mg</option><option>ml</option><option>tab</option><option>cap</option><option>amp</option></select></div>'+
+    '<div class="field"><label>batch no</label><input id="cd_batch"></div></div>'+
+
+    '<div id="cd_receivedFields">'+
+      '<div class="row"><div class="field"><label>supplier *</label><input id="cd_sup" placeholder="MWI Animal Health"></div>'+
+      '<div class="field"><label>invoice no</label><input id="cd_inv"></div></div>'+
+      '<div class="field"><label>authorising vet (signature) *</label><select id="cd_auth">'+state.clinicians.filter(c=>c.controlledDrugAuthorised).map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('')+'</select></div>'+
+    '</div>'+
+
+    '<div id="cd_dispensedFields" style="display:none">'+
+      '<div class="row"><div class="field"><label>animal *</label><select id="cd_animal">'+state.animals.map(a=>'<option value="'+a.id+'">'+esc(a.name)+' ('+esc(clientName(ownerOf(a)))+')</option>').join('')+'</select></div>'+
+      '<div class="field"><label>prescription ref</label><input id="cd_rx" placeholder="rx_xxxx"></div></div>'+
+      '<div class="row"><div class="field"><label>witness 1 (prescribing vet) *</label><select id="cd_wit1">'+state.clinicians.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('')+'</select></div>'+
+      '<div class="field"><label>witness 2 *</label><select id="cd_wit2">'+state.clinicians.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('')+'</select></div></div>'+
+    '</div>'+
+
+    '<div id="cd_destroyedFields" style="display:none">'+
+      '<div class="row"><div class="field"><label>reason *</label><input id="cd_dr" placeholder="expired / damaged / return"></div>'+
+      '<div class="field"><label>method *</label><input id="cd_dm" placeholder="denatured + sealed bag · DOOP"></div></div>'+
+      '<div class="row"><div class="field"><label>witness 1 *</label><select id="cd_dw1">'+state.clinicians.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('')+'</select></div>'+
+      '<div class="field"><label>witness 2 (independent) *</label><select id="cd_dw2">'+state.clinicians.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('')+'</select></div></div>'+
+    '</div>'+
+
+    '<div class="actions"><button class="btn ghost" onclick="closeModal()">cancel</button><button class="btn primary" onclick="saveCDEntry()">record entry</button></div>';
+}
+function cdEntryToggle(){
+  const t=$('#cd_type').value;
+  $('#cd_receivedFields').style.display=t==='received'?'block':'none';
+  $('#cd_dispensedFields').style.display=t==='dispensed'?'block':'none';
+  $('#cd_destroyedFields').style.display=t==='destroyed'?'block':'none';
+}
+async function saveCDEntry(){
+  const type=$('#cd_type').value;
+  const drug=$('#cd_drug').value.trim();if(!drug){toast('drug required');return}
+  const amt=parseFloat($('#cd_amt').value);if(!amt||amt<=0){toast('amount required');return}
+  const e={id:'cd_'+uuid(),firmId:state.firm.id,ts:new Date($('#cd_date').value||fmtDate(now())).getTime(),
+    entryType:type,drug,strength:$('#cd_str').value,schedule:$('#cd_sched').value,
+    amount:amt,unit:$('#cd_unit').value,batchNo:$('#cd_batch').value,
+    recordedBy:state.activeClinicianId,recordedAt:now()};
+  if(type==='received'){
+    e.supplier=$('#cd_sup').value;e.invoiceNo=$('#cd_inv').value;e.authSig=$('#cd_auth').value;
+    if(!e.supplier||!e.authSig){toast('supplier + auth vet required');return}
+  } else if(type==='dispensed'){
+    e.animalId=$('#cd_animal').value;e.rxId=$('#cd_rx').value;
+    e.witness1=$('#cd_wit1').value;e.witness2=$('#cd_wit2').value;
+    if(!e.animalId||!e.witness1||!e.witness2){toast('animal + 2 witnesses required');return}
+    if(e.witness1===e.witness2){toast('witnesses must be different');return}
+  } else {
+    e.destroyedReason=$('#cd_dr').value;e.destroyedMethod=$('#cd_dm').value;
+    e.witness1=$('#cd_dw1').value;e.witness2=$('#cd_dw2').value;
+    if(!e.destroyedReason||!e.destroyedMethod||!e.witness1||!e.witness2){toast('reason + method + 2 witnesses required');return}
+    if(e.witness1===e.witness2){toast('two-witness rule: witnesses must be different');return}
+  }
+  await idbPut('controlledDrugRegister',e);
+  await auditPut('controlled-drug.entry',type+' · '+drug,{id:e.id});
+  broadcast('controlled-drug.entry',e);await loadAll();
+  closeModal();toast('CD entry recorded');render();
+}
+
+// ── vaccinations ──
+function viewVaccinations(){
+  const list=state.vaccs.slice().sort((x,y)=>y.ts-x.ts);
+  return '<div class="section-h"><div><h2>vaccinations</h2><div class="sub">'+list.length+' records · auto-flag amber 30d before next due</div></div></div>'+
+    (list.length?'<table><thead><tr><th>date</th><th>animal</th><th>vaccine</th><th>batch · expires</th><th>vet</th><th>next due</th><th>status</th></tr></thead><tbody>'+
+      list.map(v=>{const a=animalById(v.animalId);const due=v.nextDueDate;
+        let st={kind:'ok',label:'—'};
+        if(due){const d=new Date(due).getTime();const dd=daysBetween(now(),d);if(dd<0)st={kind:'overdue',label:'overdue '+(-dd)+'d'};else if(dd<30)st={kind:'amber',label:'due '+dd+'d'};else st={kind:'ok',label:'due '+dd+'d'}}
+        return '<tr class="'+(st.kind==='overdue'?'crit':st.kind==='amber'?'warn':'')+' clickable" onclick="selectAnimal(\''+(a?a.id:'')+'\')"><td>'+fmtDate(v.ts)+'</td><td>'+(a?speciesIcon(a.species)+' '+esc(a.name):'—')+'</td><td>'+esc(v.vaccine)+'</td><td class="mono">'+esc(v.batchNo)+' · '+esc(v.expiresAt||'')+'</td><td>'+esc((vetById(v.byClinicianId)||{}).name||'—')+'</td><td>'+esc(due||'')+'</td><td><span class="tag '+(st.kind==='overdue'?'red':st.kind==='amber'?'amber':'green')+'">'+esc(st.label)+'</span></td></tr>';
+      }).join('')+'</tbody></table>':'<div class="empty-state">no vaccination records</div>');
+}
+async function modalVacc(animalId){
+  const a=animalById(animalId);
+  $('#modalContent').innerHTML='<h2>+ vaccination · '+(a?esc(a.name):'')+'</h2>'+
+    '<div class="row r3"><div class="field"><label>vaccine *</label><input id="vc_vacc" placeholder="DHPPi+L4"></div>'+
+    '<div class="field"><label>batch no *</label><input id="vc_batch"></div>'+
+    '<div class="field"><label>vaccine expires</label><input id="vc_exp" type="date"></div></div>'+
+    '<div class="row r3"><div class="field"><label>given by *</label><select id="vc_by">'+state.clinicians.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('')+'</select></div>'+
+    '<div class="field"><label>date given</label><input id="vc_dt" type="date" value="'+fmtDate(now())+'"></div>'+
+    '<div class="field"><label>next due</label><input id="vc_next" type="date" value="'+fmtDate(addDays(now(),365))+'"></div></div>'+
+    '<div class="actions"><button class="btn ghost" onclick="closeModal()">cancel</button><button class="btn primary" onclick="saveVacc(\''+animalId+'\')">record</button></div>';
+}
+async function saveVacc(animalId){
+  const vacc=$('#vc_vacc').value.trim();if(!vacc){toast('vaccine required');return}
+  const batch=$('#vc_batch').value.trim();if(!batch){toast('batch no required');return}
+  const v={id:'vc_'+uuid(),firmId:state.firm.id,animalId,
+    ts:new Date($('#vc_dt').value||fmtDate(now())).getTime(),
+    vaccine:vacc,batchNo:batch,expiresAt:$('#vc_exp').value,
+    byClinicianId:$('#vc_by').value,nextDueDate:$('#vc_next').value};
+  await idbPut('vaccinationRecords',v);
+  // also push into animal.vaccinationHistory
+  const a=await idbGet('animals',animalId);a.vaccinationHistory=a.vaccinationHistory||[];
+  a.vaccinationHistory.push({ts:v.ts,vaccine:v.vaccine,batchNo:v.batchNo,expiresAt:v.expiresAt,byClinicianId:v.byClinicianId,nextDueDate:v.nextDueDate});
+  a.updatedAt=now();await idbPut('animals',a);
+  await auditPut('vaccination.recorded',vacc,{animalId,batch});
+  broadcast('animal.updated',a);await loadAll();
+  closeModal();toast('vaccination recorded');renderAll();
+}
+
+// ── microchips ──
+function viewMicrochips(){
+  const list=state.animals.filter(a=>a.microchipNo);
+  const missing=state.animals.filter(a=>!a.microchipNo);
+  const catsMissing=missing.filter(a=>a.species==='cat');
+  const dogsMissing=missing.filter(a=>a.species==='dog');
+  return '<div class="section-h"><div><h2>microchip register</h2><div class="sub">England: dogs mandatory 2016 · cats mandatory 10 June 2024</div></div></div>'+
+    '<div class="grid" style="margin-bottom:14px">'+
+      '<div class="card"><h3>compliance</h3>'+
+        '<div class="kpi"><span class="l">registered</span><span class="v brass">'+list.length+'</span></div>'+
+        '<div class="kpi"><span class="l">dogs missing chip</span><span class="v '+(dogsMissing.length?'red':'green')+'">'+dogsMissing.length+'</span></div>'+
+        '<div class="kpi"><span class="l">cats missing chip</span><span class="v '+(catsMissing.length?'red':'green')+'">'+catsMissing.length+'</span></div>'+
+      '</div>'+
+    '</div>'+
+    (list.length?'<table><thead><tr><th>animal</th><th>owner</th><th>chip no</th><th>implanted</th><th>by</th><th>database</th></tr></thead><tbody>'+
+      list.map(a=>'<tr class="clickable" onclick="selectAnimal(\''+a.id+'\')"><td>'+speciesIcon(a.species)+' '+esc(a.name)+'</td><td>'+esc(clientName(ownerOf(a)))+'</td><td class="mono">'+esc(a.microchipNo)+'</td><td>'+esc(a.microchipDate||'')+'</td><td>'+esc((vetById(a.microchipBy)||{}).name||'—')+'</td><td>'+esc(a.microchipDB||'')+'</td></tr>').join('')+
+      '</tbody></table>':'<div class="empty-state">no microchipped animals</div>')+
+    (missing.length?'<h3 style="margin-top:18px;font-family:var(--serif);font-size:14px;color:var(--ox-warm)">missing chips (legal duty)</h3><table><thead><tr><th>animal</th><th>species</th><th>owner</th><th></th></tr></thead><tbody>'+
+      missing.map(a=>'<tr class="warn"><td>'+esc(a.name)+'</td><td>'+esc(a.species)+'</td><td>'+esc(clientName(ownerOf(a)))+'</td><td><button class="btn sm" onclick="selectAnimal(\''+a.id+'\');state.activeAnimalTab=\'microchip\';render()">add chip</button></td></tr>').join('')+'</tbody></table>':'');
+}
+
+// ── AHC ──
+function viewAHC(){
+  return '<div class="section-h"><div><h2>animal health certificates (AHC) · EU travel</h2><div class="sub">post-Brexit · only Official Vets (OVs) may issue · valid 4 mo entry / 10 days re-entry</div></div>'+
+    '<div class="actions"><button class="btn primary" onclick="openModal(\'ahc\')">+ new AHC</button></div></div>'+
+    '<div class="card" style="margin-bottom:14px"><h3>OV status in this practice</h3>'+
+      (state.clinicians.filter(c=>c.ovStatus).length?state.clinicians.filter(c=>c.ovStatus).map(c=>'<div class="kpi"><span class="l">'+esc(c.name)+'</span><span class="v green">OV · '+esc(c.ovStatus)+'</span></div>').join(''):'<div class="empty-state">no OV registered. Edit a vet record on the <button class="btn sm ghost" onclick="showApp(\'clinicians\')">vets tab</button> to add OV status.</div>')+
+    '</div>'+
+    (state.ahcs&&state.ahcs.length?'<table><thead><tr><th>date</th><th>animal</th><th>destination</th><th>OV</th><th>expires</th></tr></thead><tbody>'+state.ahcs.map(h=>'<tr><td>'+fmtDate(h.ts)+'</td><td>'+esc(h.animalName)+'</td><td>'+esc(h.destination)+'</td><td>'+esc(h.ovName)+'</td><td>'+esc(h.expiresAt)+'</td></tr>').join('')+'</tbody></table>':'<div class="empty-state">no AHCs issued — they require a Certified OV and the official APHA stock template; this register tracks issuance for audit.</div>');
+}
+async function modalAHC(){
+  const ovs=state.clinicians.filter(c=>c.ovStatus);
+  if(!ovs.length){closeModal();toast('no OV registered — add OV status to a vet first');return}
+  $('#modalContent').innerHTML='<h2>+ AHC issuance record</h2>'+
+    '<p style="font-size:12px;color:var(--cream-dim);margin-bottom:10px">FallVet does not issue AHCs (that is done via APHA portal by an OV). This records the issuance for practice audit.</p>'+
+    '<div class="row"><div class="field"><label>animal</label><select id="ahc_an">'+state.animals.map(a=>'<option value="'+a.id+'">'+esc(a.name)+'</option>').join('')+'</select></div>'+
+    '<div class="field"><label>OV</label><select id="ahc_ov">'+ovs.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('')+'</select></div></div>'+
+    '<div class="row"><div class="field"><label>destination country</label><input id="ahc_dest" placeholder="France"></div>'+
+    '<div class="field"><label>expires</label><input id="ahc_exp" type="date" value="'+fmtDate(addDays(now(),120))+'"></div></div>'+
+    '<div class="field"><label>APHA reference</label><input id="ahc_ref" placeholder="APHA-AHC-2026-XXXXX"></div>'+
+    '<div class="actions"><button class="btn ghost" onclick="closeModal()">cancel</button><button class="btn primary" onclick="saveAHC()">record</button></div>';
+}
+async function saveAHC(){
+  const animal=animalById($('#ahc_an').value);
+  const ovId=$('#ahc_ov').value;const ov=vetById(ovId);
+  state.ahcs=state.ahcs||[];
+  const h={id:'ahc_'+uuid(),ts:now(),animalId:animal.id,animalName:animal.name,
+    ovId,ovName:ov.name,destination:$('#ahc_dest').value,expiresAt:$('#ahc_exp').value,
+    aphaRef:$('#ahc_ref').value};
+  state.ahcs.push(h);
+  await auditPut('ahc.recorded',h.destination,h);
+  closeModal();toast('AHC recorded');render();
+}
+
+// ── PSS evidence ──
+function viewPSS(){
+  state.pssEvidence=state.pssEvidence||[];
+  const f=state.firm;
+  const modules={
+    core:['Compliance with RCVS Code','Practice premises safe + clean','Adequate clinical equipment','Medicines stored & managed per VMR','Health & safety risk assessments','Infection control protocol','Clinical waste disposal','Staff CPD evidence','Client complaints register','Practice info leaflet'],
+    gp:['Core requirements','Designated consult rooms','In-house lab capability','Recovery facilities','24/7 emergency cover arrangements','Surgical kit logs + autoclave records','Anaesthesia monitoring records','Triaging protocols','Inpatient hospitalisation observations','Imaging facility (x-ray min)'],
+    hospital:['GP requirements','Full hospitalisation 24/7 staffed','Dedicated theatre','Advanced imaging (US min, CT/MRI desirable)','In-house haematology + biochem','Isolation facility','Specialist referral capability','Continuous patient monitoring','Multidisciplinary case meetings','RCVS-registered Specialists or Advanced Practitioners']
+  };
+  const sel=f.pssLevel||'core';
+  const req=modules[sel]||[];
+  const captured=state.pssEvidence.filter(e=>e.module===sel).length;
+  return '<div class="section-h"><div><h2>PSS evidence · '+esc(sel.toUpperCase())+' module</h2><div class="sub">4-year audit cycle · '+captured+'/'+req.length+' captured</div></div>'+
+    '<div class="actions"><button class="btn primary" onclick="openModal(\'pss\')">+ evidence</button></div></div>'+
+    '<div class="card" style="margin-bottom:14px"><h3>requirement coverage</h3>'+
+      '<table><thead><tr><th>requirement</th><th>captured</th><th>last evidence</th></tr></thead><tbody>'+
+      req.map(r=>{const ev=state.pssEvidence.filter(e=>e.requirement===r).sort((x,y)=>y.ts-x.ts);const last=ev[0];
+        return '<tr class="'+(!last?'warn':'')+'"><td>'+esc(r)+'</td><td><span class="tag '+(last?'green':'amber')+'">'+(last?'yes ('+ev.length+')':'missing')+'</span></td><td>'+(last?fmtDate(last.ts):'—')+'</td></tr>';
+      }).join('')+'</tbody></table>'+
+    '</div>'+
+    '<h3 style="font-family:var(--serif);font-size:14px;color:var(--brass);margin-bottom:8px">evidence log</h3>'+
+    (state.pssEvidence.length?'<table><thead><tr><th>date</th><th>requirement</th><th>type</th><th>note</th><th>captured by</th></tr></thead><tbody>'+
+      state.pssEvidence.slice().sort((x,y)=>y.ts-x.ts).map(e=>'<tr><td>'+fmtDate(e.ts)+'</td><td>'+esc(e.requirement)+'</td><td><span class="tag dim">'+esc(e.evidenceType)+'</span></td><td>'+esc(e.note)+'</td><td>'+esc((vetById(e.byId)||{}).name||'—')+'</td></tr>').join('')+'</tbody></table>':'<div class="empty-state">no PSS evidence captured</div>');
+}
+async function modalPSS(){
+  const f=state.firm;const sel=f.pssLevel||'core';
+  const modules={
+    core:['Compliance with RCVS Code','Practice premises safe + clean','Adequate clinical equipment','Medicines stored & managed per VMR','Health & safety risk assessments','Infection control protocol','Clinical waste disposal','Staff CPD evidence','Client complaints register','Practice info leaflet'],
+    gp:['Core requirements','Designated consult rooms','In-house lab capability','Recovery facilities','24/7 emergency cover arrangements','Surgical kit logs + autoclave records','Anaesthesia monitoring records','Triaging protocols','Inpatient hospitalisation observations','Imaging facility (x-ray min)'],
+    hospital:['GP requirements','Full hospitalisation 24/7 staffed','Dedicated theatre','Advanced imaging (US min, CT/MRI desirable)','In-house haematology + biochem','Isolation facility','Specialist referral capability','Continuous patient monitoring','Multidisciplinary case meetings','RCVS-registered Specialists or Advanced Practitioners']
+  };
+  const reqs=modules[sel]||modules.core;
+  $('#modalContent').innerHTML='<h2>+ PSS evidence</h2>'+
+    '<div class="row"><div class="field"><label>requirement *</label><select id="pss_req">'+reqs.map(r=>'<option>'+esc(r)+'</option>').join('')+'</select></div>'+
+    '<div class="field"><label>type</label><select id="pss_type"><option>protocol</option><option>training-record</option><option>audit-record</option><option>policy</option><option>logbook</option><option>certificate</option><option>photo</option><option>other</option></select></div></div>'+
+    '<div class="field"><label>note / reference</label><textarea id="pss_note" rows="3" placeholder="brief description of evidence captured + where stored"></textarea></div>'+
+    '<div class="field"><label>captured date</label><input id="pss_dt" type="date" value="'+fmtDate(now())+'"></div>'+
+    '<div class="actions"><button class="btn ghost" onclick="closeModal()">cancel</button><button class="btn primary" onclick="savePSS(\''+sel+'\')">save evidence</button></div>';
+}
+async function savePSS(module){
+  state.pssEvidence=state.pssEvidence||[];
+  const e={id:'pss_'+uuid(),firmId:state.firm.id,ts:new Date($('#pss_dt').value||fmtDate(now())).getTime(),
+    module,requirement:$('#pss_req').value,evidenceType:$('#pss_type').value,note:$('#pss_note').value,
+    byId:state.activeClinicianId};
+  state.pssEvidence.push(e);
+  await auditPut('pss.evidence.added',e.requirement,e);
+  broadcast('pss.evidence.added',e);
+  closeModal();toast('PSS evidence captured');render();
+}
+
+// ── clinicians ──
+function viewClinicians(){
+  return '<div class="section-h"><div><h2>clinicians</h2><div class="sub">'+state.clinicians.length+' on register · RCVS CPD target 35hr/yr 3-yr rolling avg</div></div>'+
+    '<div class="actions"><button class="btn primary" onclick="newClinician()">+ vet / staff</button></div></div>'+
+    '<table><thead><tr><th>name</th><th>role</th><th>RCVS reg no</th><th>MRCVS</th><th>CPD</th><th>CD auth</th><th>OV</th><th>active</th></tr></thead><tbody>'+
+      state.clinicians.map(c=>'<tr><td><strong>'+esc(c.name)+'</strong><div class="mono" style="font-size:10px;color:var(--cream-muted)">'+esc(c.email||'')+'</div></td><td><span class="tag dim">'+esc(c.role||'vet')+'</span></td><td class="mono">'+esc(c.rcvsRegNo||'—')+'</td><td>'+(c.mrcvs?'<span class="tag green">MRCVS</span>':'—')+'</td><td class="r">'+(c.cpdHours||0).toFixed(1)+' hr <button class="btn sm ghost" onclick="addCPD(\''+c.id+'\')">+</button></td><td>'+(c.controlledDrugAuthorised?'<span class="tag green">yes</span>':'no')+'</td><td>'+(c.ovStatus?'<span class="tag blue">'+esc(c.ovStatus)+'</span>':'<button class="btn sm ghost" onclick="setOV(\''+c.id+'\')">+ OV</button>')+'</td><td><span class="tag '+(c.status==='active'?'green':'dim')+'">'+esc(c.status)+'</span></td></tr>').join('')+
+      '</tbody></table>';
+}
+async function newClinician(){
+  const name=prompt('Full name');if(!name)return;
+  const rcvs=prompt('RCVS reg no (blank if non-vet)')||'';
+  const role=prompt('Role: vet / lead / rvn / vca / admin','vet')||'vet';
+  const c={id:'cn_'+uuid(),firmId:state.firm.id,createdAt:now(),updatedAt:now(),
+    name,email:'',rcvsRegNo:rcvs,mrcvs:!!rcvs,role,
+    cpdHours:0,cpdYearStart:fmtDate(now()),
+    controlledDrugAuthorised:!!rcvs,
+    prescriptionRights:['POM-V','POM-VPS','NFA-VPS','AVM-GSL'],
+    status:'active',startedAt:now()};
+  await idbPut('clinicians',c);
+  await auditPut('clinician.created',name,{id:c.id});
+  await loadAll();renderAll();toast('added');
+}
+async function addCPD(id){
+  const hr=parseFloat(prompt('CPD hours to add'));if(!hr)return;
+  const c=await idbGet('clinicians',id);c.cpdHours=(c.cpdHours||0)+hr;c.updatedAt=now();
+  await idbPut('clinicians',c);await auditPut('clinician.cpd.added',hr+' hr',{id});
+  await loadAll();render();
+}
+async function setOV(id){
+  const ov=prompt('OV designation (e.g. OV · AHC certified)');if(!ov)return;
+  const c=await idbGet('clinicians',id);c.ovStatus=ov;c.updatedAt=now();
+  await idbPut('clinicians',c);await loadAll();render();
+}
+
+// ── clients ──
+function viewClients(){
+  return '<div class="section-h"><div><h2>owners</h2><div class="sub">'+state.clients.length+' on register</div></div>'+
+    '<div class="actions"><button class="btn primary" onclick="newOwner()">+ owner</button></div></div>'+
+    '<table><thead><tr><th>name</th><th>contact</th><th>animals</th><th>insurer</th><th>account</th><th>GDPR</th></tr></thead><tbody>'+
+      state.clients.map(c=>{const ans=state.animals.filter(a=>a.clientId===c.id);
+        return '<tr><td><strong>'+esc(clientName(c))+'</strong></td><td><div class="mono" style="font-size:11px">'+esc(c.email||'')+'</div><div class="mono" style="font-size:11px">'+esc(c.phone||'')+'</div></td><td>'+ans.map(a=>'<span class="tag" style="cursor:pointer" onclick="selectAnimal(\''+a.id+'\')">'+speciesIcon(a.species)+' '+esc(a.name)+'</span>').join('')+'</td><td>'+esc(c.petInsuranceProvider||'—')+'</td><td><span class="tag '+(c.accountStatus==='good'?'green':'amber')+'">'+esc(c.accountStatus||'good')+'</span></td><td>'+(c.gdprConsentToContact?'<span class="tag green">opt-in</span>':'<span class="tag dim">no</span>')+'</td></tr>';
+      }).join('')+'</tbody></table>';
+}
+async function newOwner(){
+  const first=prompt('First name');if(!first)return;
+  const last=prompt('Last name');if(!last)return;
+  const c={id:'cl_'+uuid(),firmId:state.firm.id,createdAt:now(),updatedAt:now(),
+    title:'',firstName:first,lastName:last,email:'',phone:'',
+    address:{line1:'',postcode:'',country:'GB'},
+    accountStatus:'good',gdprConsentToContact:false,marketingOptIn:false,
+    petInsuranceProvider:'',insuranceClaimsHistory:[]};
+  await idbPut('clients',c);await auditPut('client.created',clientName(c),{id:c.id});
+  broadcast('client.created',c);await loadAll();renderAll();
+}
+
+// ── audit view ──
+function viewAudit(){
+  const list=state.audit.slice().reverse();
+  return '<div class="section-h"><div><h2>audit chain · Mansoor P3</h2><div class="sub">append-only · sha256 prev-hash chain · '+list.length+' entries · retain clinical 5yr · CD 2yr · PSS 4yr</div></div>'+
+    '<div class="actions"><button class="btn ghost" onclick="exportAudit()">export JSON</button></div></div>'+
+    (list.length?'<table><thead><tr><th>#</th><th>ts</th><th>action</th><th>clinician</th><th>reasoning</th><th>hash</th></tr></thead><tbody>'+
+      list.slice(0,500).map(e=>'<tr><td class="mono">'+(e.i||'—')+'</td><td class="mono" style="font-size:10px">'+fmtDT(e.ts)+'</td><td><strong>'+esc(e.action)+'</strong></td><td>'+esc((vetById(e.clinicianId)||{}).name||'—')+'</td><td>'+esc(e.reasoning||'')+'</td><td class="mono" style="font-size:9px">'+esc((e.docHash||'').slice(0,16))+'…</td></tr>').join('')+
+      '</tbody></table>':'<div class="empty-state">no audit entries</div>')+
+    (list.length>500?'<div class="empty-state">(showing 500 of '+list.length+')</div>':'');
+}
+async function exportAudit(){
+  const blob=new Blob([JSON.stringify(state.audit,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='fallvet-audit-'+fmtDate(now())+'.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(u),1000);
+}
+async function exportSnapshot(){
+  const snap={tool:TOOLNAME,version:VERSION,exportedAt:now(),firm:state.firm,clinicians:state.clinicians,clients:state.clients,animals:state.animals,consults:state.consults,prescriptions:state.prescriptions,controlledDrugRegister:state.cds,vaccinationRecords:state.vaccs,pssEvidence:state.pssEvidence||[],audit:state.audit};
+  const blob=new Blob([JSON.stringify(snap,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='fallvet-snapshot-'+fmtDate(now())+'.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(u),1000);toast('snapshot exported');
+}
+
+// ── Q&A ──
+function viewQA(){
+  return '<div class="section-h"><div><h2>Q &amp; A</h2><div class="sub">T0 deterministic RCVS rules · T3 optional BYOK</div></div><div class="actions"><button class="btn sm" onclick="state.chat=[];render()">clear</button></div></div>'+
+    '<div class="chat" id="qaChat">'+
+      (state.chat.length?state.chat.map(m=>'<div class="msg '+m.role+'">'+esc(m.text)+(m.src?'<div class="src">'+esc(m.src)+'</div>':'')+'</div>').join(''):'<div class="empty-state">ask: "RCVS Code?" "PSS modules?" "VMR cascade?" "Schedule 2 CD register?" "two-witness CD destruction?" "microchip cats mandatory date?" "withdrawal period?" "AHC EU?" "CPD 35hr?" "Animal Welfare Act?" "antimicrobial stewardship?" "notifiable diseases?" "pet passport?" "PSS 4-year audit?"</div>')+
+    '</div>'+
+    '<div class="chat-input"><input type="text" id="qaInput" placeholder="ask..." onkeydown="if(event.key===\'Enter\')askQA()"><button class="btn primary" onclick="askQA()">ask</button></div>';
+}
+function bindQA(){setTimeout(()=>$('#qaChat')&&($('#qaChat').scrollTop=$('#qaChat').scrollHeight),50)}
+
+// ── T0 patterns · 14 rules ──
+const T0_RULES=[
+  {match:/rcvs.*(code|professional conduct)|code of professional conduct/i,
+    answer:()=>'RCVS Code of Professional Conduct sets out the 10 Principles of Practice for Veterinary Surgeons. Key duties: (1) put animal welfare first; (2) maintain professional knowledge & competence; (3) be open & honest with clients; (4) maintain confidentiality (with limited exceptions, e.g. public-health duty); (5) keep accurate clinical records (s.6.1 — append-only, signed); (6) cooperate with RCVS investigations; (7) only practise within competence; (8) report concerns about colleagues; (9) avoid conflicts of interest; (10) treat clients fairly. Breach can trigger Disciplinary Committee referral. The Code is supported by 28 chapters of supporting guidance.\n\nNot legal advice — verify against current RCVS Code.'},
+  {match:/pss.*(core|gp|hospital|module|level)|practice standards scheme.*(level|module)/i,
+    answer:()=>'RCVS Practice Standards Scheme has three accreditation modules:\n\n• **Core** — baseline: RCVS-registered premises, basic equipment, medicines mgmt per VMR, H&S, infection control, CPD records, complaints process. ~150 standards.\n\n• **General Practice** — Core + dedicated consult rooms, in-house lab capability, recovery facilities, 24/7 emergency cover (own or contracted), surgical/autoclave logs, anaesthesia monitoring, basic imaging. ~250 standards.\n\n• **Veterinary Hospital** — GP + 24/7 staffed hospitalisation, dedicated theatre, advanced imaging (US min), in-house haem+biochem, isolation, specialist referral capability. ~350 standards.\n\nPlus optional **Species modules**: Small Animal, Equine, Farm Animal. **4-year audit cycle** with interim assessment. Not legal advice — see RCVS PSS Manual.'},
+  {match:/vmr|cascade|off.label|veterinary medicines regulations/i,
+    answer:()=>'The **Veterinary Medicines Regulations 2013** (as amended) set the prescribing cascade. Order:\n\n1. UK-licensed veterinary medicine for the species & condition\n2. UK-licensed veterinary medicine for a different species or condition\n3. UK-licensed human medicine, OR an EU-licensed vet medicine (under SIC)\n4. Extemporaneous (specially compounded) preparation\n\nOff-label use **MUST** be documented in clinical record with: clinical justification, owner consent (informed), withdrawal period (if food-producing — default minima: 7d milk, 28d meat, 500dd fish), and notification to owner of risk. The cascade is a personal professional decision by the prescribing vet. Breach = VMD/RCVS sanction. Not legal advice — VMD Cascade guidance.'},
+  {match:/schedule.*(2|two|ii).*cd|controlled drug.*(register|schedule)|cd.*register|misuse of drugs/i,
+    answer:()=>'**Schedule 2 controlled drugs** (e.g. methadone, pethidine, fentanyl, morphine, ketamine [Sch 2 in some forms]) require statutory register (Misuse of Drugs Regs 2001, r.19):\n\n• Bound book OR computerised system (with audit trail, daily back-up, 2-yr retention from last entry)\n• Separate page per drug + strength + form\n• Entries within 24 hr of transaction (in chronological order, indelible ink, no alterations)\n• Each entry: date, name + address of supplier/recipient, quantity, form & strength\n• Receipt entries: also batch no, invoice no\n• Dispensing entries: animal + owner + Rx ref + vet signature + (best practice) witness signature\n• Stock check & balance reconciliation at intervals\n• 5-yr retention from last entry of the book (UK Home Office)\n\nSchedule 3 (e.g. tramadol, buprenorphine, midazolam) — no register required but **invoices retained 2 yr**. Both: stored in locked CD cabinet per Misuse of Drugs (Safe Custody) Regs 1973.\n\nNot legal advice — verify with VMD CD guidance.'},
+  {match:/(two|2).?witness|witness.*destr|destruction.*witness|denatur/i,
+    answer:()=>'**Two-witness rule for CD destruction** — Misuse of Drugs Regs 2001 r.27 (as amended by Controlled Drugs (Supervision of Management & Use) Regs 2013).\n\nWhen destroying Schedule 2 CDs (expired, damaged, returned by client):\n\n1. Two **independent** witnesses required — typically one **Authorised Witness** (e.g. RCVS Specialist, designated person from PCT/equivalent, accountable officer) plus the registered manager OR another vet\n2. Drug must be **denatured** before disposal — broken down so unrecoverable (CD denaturing kit, kitty litter + water + bleach)\n3. Place in sealed pharmaceutical waste bag (DOOP — Disposal of Old Pharmaceuticals)\n4. Both witnesses sign the CD register **destruction entry** with date, drug name, strength, quantity, form, reason, method\n5. Disposal via licensed clinical waste contractor\n\nWitnesses must not be the same person. Register entry retained 2 yr from date. Not legal advice — VMD + Home Office CD guidance.'},
+  {match:/microchip.*(cat|england|mandatory|2024|date)/i,
+    answer:()=>'**Cats in England** — microchipping became mandatory **10 June 2024** under the Microchipping of Cats and Dogs (England) Regulations 2023. All cats aged 20 weeks or older must be microchipped and registered on a DEFRA-compliant database. Owner failure → 21-day notice then **£500 fine**.\n\n**Dogs in England** — mandatory since **6 April 2016** (Microchipping of Dogs (England) Regulations 2015). Same enforcement.\n\nApproved databases: Petlog, MicrochipCentral, Identibase, Animal Microchips, Smarttrac, Pet ID, ProtectedPet. Vet duties: implant correctly, record + verify chip no, advise owner on database registration & keeping contact details current. Scotland/Wales/NI have separate legislation. Not legal advice — DEFRA + RCVS guidance.'},
+  {match:/withdrawal.*period|food.producing|farm.*medicine|residue/i,
+    answer:()=>'**Withdrawal period** = minimum time between last administration of a vet medicine to a food-producing animal and slaughter / milk / egg collection, to ensure residues are below MRL (Maximum Residue Limit).\n\nFor licensed UK veterinary medicines: as stated on the SPC / data sheet.\n\nFor **cascade off-label use** in food-producing species, statutory minima (VMR 2013):\n• **Eggs:** 7 days\n• **Milk:** 7 days\n• **Meat (mammals + poultry):** 28 days\n• **Fish:** 500 degree-days (Σ daily mean water temp °C × days)\n\nVet must inform farmer in writing of WP, record on Veterinary Medicines Record (farm-side). Some active substances are **banned** in food-producing animals (chloramphenicol, dimetridazole, metronidazole, nitrofurans, etc — Annex IV of EU Reg 470/2009 as retained). Not legal advice.'},
+  {match:/ahc|animal health cert|eu travel|pet travel|post.brexit/i,
+    answer:()=>'**Animal Health Certificate (AHC)** — required for non-commercial EU travel of dogs, cats and ferrets since 1 Jan 2021 (replaces EU Pet Passport for GB pets).\n\n• Issued by an **Official Veterinarian (OV)** — vet with OV qualification (LVI registered with APHA)\n• Animal must be: microchipped (before vaccination), rabies-vaccinated (≥21 days before travel, valid 3 yr if booster maintained), and (Finland/Ireland/Malta/Norway) tapeworm-treated 24-120 hr before entry\n• Valid for **single trip** — 10 days entry to EU + 4 months onward EU travel + 4 months return to GB\n• Cost typically £100-£200 per trip\n• Issued via APHA portal — practice retains evidence in records\n\nGB Pet Passports issued before 1 Jan 2021 are **invalid** for EU travel (still valid for GB→NI). NI pet owners can still get EU Pet Passport. Not legal advice — APHA + RCVS guidance.'},
+  {match:/cpd.*35|cpd.*rolling|continuing professional development|vet.*cpd/i,
+    answer:()=>'**RCVS CPD requirement** (changed Jan 2020):\n\n• Vets: **35 hours per year**, averaged over a **3-year rolling period** (so 105 hr / 3 yr)\n• RVNs: **15 hours per year**, same rolling avg\n• Recorded on **1CPD platform** (RCVS) — outcomes-based, reflective\n• Each CPD activity must show: plan → do → reflect → impact on practice\n• Self-declared annually as part of registration renewal\n• Audit: ~5% of vets/RVNs sampled each year\n• **Sanction:** failure → removal from Register (no longer MRCVS / RVN)\n\nClinical Governance is also required (separate from CPD). Not legal advice — RCVS CPD Policy.'},
+  {match:/animal welfare act|duty of care.*animal|2006/i,
+    answer:()=>'**Animal Welfare Act 2006** (England & Wales; Animal Health & Welfare Scotland Act 2006; Welfare of Animals Act NI 2011) — primary animal welfare statute.\n\n**s.9 Duty of care** — person responsible must take reasonable steps to ensure 5 welfare needs are met:\n1. Suitable environment\n2. Suitable diet\n3. Ability to exhibit normal behaviour patterns\n4. Housed with or apart from other animals appropriately\n5. Protection from pain, suffering, injury and disease\n\n**s.4 Unnecessary suffering** — offence to cause / permit unnecessary suffering (max 5 yr custody since Animal Welfare (Sentencing) Act 2021).\n\nVet duties: assess welfare in every consult, report concerns (BVA + RCVS welfare reporting guidance), liaise with RSPCA / Local Authority where appropriate. Confidentiality may be breached in public interest / animal-welfare emergencies.\n\nNot legal advice.'},
+  {match:/antimicrobial|stewardship|amr|antibiotic/i,
+    answer:()=>'**Antimicrobial Stewardship** — RCVS + BVA + VMD priority since 2014 (UK 5-yr AMR Action Plan; UK 20-yr Vision).\n\nKey principles for vets:\n\n• **Diagnose first** — culture & sensitivity where possible, especially for repeat/failed treatment\n• **Use HP-CIA (Highest-Priority Critically Important Antimicrobials) only when no alternative**: 3rd/4th-gen cephalosporins, fluoroquinolones, polymyxins (colistin)\n• Colistin — should not be used in animals (last-resort human antibiotic)\n• **Prophylactic / metaphylactic** use minimised — only with clear justification\n• Record indication, dose, duration on Rx + clinical record\n• **PROTECT ME** posters (small animal) — BSAVA guidance\n• Reduce empirical use via practice antibiotic policy + annual review of usage data\n• Owner education on full course completion + non-sharing\n\nUK total vet antibiotic sales fell 59% (2014–2022). Target: continued reduction. Not legal advice — VMD UK-VARSS reports.'},
+  {match:/notifiable.*disease|defra.*report|brucellosis|tb.*cattle|avian.influenza|rabies/i,
+    answer:()=>'**Notifiable diseases** — suspicion of certain diseases must be reported immediately to APHA (England), Welsh Govt, Scottish Govt, or DAERA NI under the Animal Health Act 1981 + Specified Diseases (Notification) Order 1996 (as amended).\n\nKey notifiable in GB include:\n• **Foot-and-Mouth Disease** (all cloven-hoofed)\n• **Bovine TB** (M. bovis — slaughter for control)\n• **Bovine Spongiform Encephalopathy (BSE)**\n• **Brucellosis** (cattle, pigs, sheep)\n• **Avian Influenza** (HPAI/LPAI in poultry, captive birds)\n• **Newcastle Disease**\n• **Classical Swine Fever**, **African Swine Fever**\n• **Bluetongue**\n• **Rabies** (any species)\n• **Anthrax**\n• **Equine Infectious Anaemia**\n\nReport to APHA helpline 03000 200 301 (England). Failure to report = criminal offence. Some diseases also reportable to OIE (now WOAH). Vet **must not delay** investigation pending owner permission for suspected notifiable disease.\n\nNot legal advice — APHA Notifiable Diseases list.'},
+  {match:/pet passport|eu passport|passport.*pet/i,
+    answer:()=>'**Pet Passport status post-Brexit:**\n\n• **GB-issued Pet Passports** (England, Scotland, Wales) issued before 1 Jan 2021 are **no longer valid** for entry into the EU. Use AHC instead (see "AHC EU travel").\n• **NI-issued Pet Passports** remain valid for EU travel — NI still aligned with EU pet travel rules.\n• **EU-issued Pet Passports** held by GB owners (e.g. expat or before Brexit) — still valid for EU travel, but issuing vet must verify ongoing rabies-vaccine continuity.\n• For travel **between GB and NI**: GB→NI requires AHC for non-commercial pets, NI→GB no documentation.\n• Returning to GB: rabies vaccination + microchip evidence required, no quarantine if from EU listed country.\n\nDocument **must** show: owner details, animal description, microchip number, rabies vaccination history (dates + product), tapeworm treatment (where required), other vaccinations, OV details.\n\nNot legal advice — DEFRA + APHA pet travel guidance.'},
+  {match:/pss.*4.year|practice standards.*audit|audit cycle/i,
+    answer:()=>'**PSS 4-year audit cycle:**\n\n• Full RCVS PSS assessment every **4 years** by a trained PSS Assessor (typically a senior vet contracted by RCVS)\n• Optional **interim self-assessment** at 2 years (recommended)\n• On-site visit: ~1 day (Core), ~1.5 days (GP), ~2 days (Hospital). Includes:\n  - Premises tour (clinical, dispensary, kennels, theatre, lab)\n  - Document review (protocols, CPD, complaints, CD register, autoclave log, kit lists)\n  - Staff interviews (clinical & non-clinical)\n  - Process observation (consult, surgical workflow, infection control)\n• Pre-visit: practice submits **self-assessment** + uploads evidence to PSS portal\n• **Outcome:** pass / pass with provisos (action plan, ~3 mo to close) / fail (suspension of accreditation)\n• Practice may **upgrade module** at any audit (Core → GP → Hospital)\n• Annual **declaration of continued compliance** between audits\n• Re-accreditation fee: ~£500–£2,500 depending on module + practice size\n\nNot legal advice — RCVS PSS Operating Procedures.'},
+];
+function t0Match(q){for(const r of T0_RULES){if(r.match.test(q))return{src:'T0 · RCVS / VMR rules engine',text:r.answer()}}return null}
+
+const Cascade={
+  async detectTier(){const s=state.settings;if(s.anthropicKey||s.openaiKey||s.geminiKey||s.openrouterKey)return'T3';return'T0'},
+  async askT0(q){const m=t0Match(q);if(m)return m;return{src:'T0 · fallback',text:'No matching rule. Try: "RCVS Code" · "PSS modules" · "VMR cascade" · "Schedule 2 CD register" · "two-witness destruction" · "microchip cats 2024" · "withdrawal period" · "AHC EU travel" · "CPD 35hr" · "Animal Welfare Act" · "antimicrobial stewardship" · "notifiable diseases" · "pet passport" · "PSS 4-year audit". Add an API key in ⚙ settings for free-form questions.'}},
+  async askT3(q){
+    const s=state.settings;
+    if(s.geminiKey){
+      try{
+        const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+encodeURIComponent(s.geminiKey),
+          {method:'POST',headers:{'Content-Type':'application/json'},
+           body:JSON.stringify({contents:[{parts:[{text:'You are FallVet — a UK vet-practice assistant. Reply briefly with RCVS/VMR-aligned guidance. Always remind user to verify with current RCVS Code + VMR + DEFRA guidance. Q: '+q}]}]})});
+        if(r.ok){const j=await r.json();const t=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0]&&j.candidates[0].content.parts[0].text;if(t)return{src:'T3 · Gemini 1.5 Flash',text:t}}
+      }catch(e){}
+    }
+    if(s.anthropicKey){
+      try{
+        const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':s.anthropicKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-3-5-haiku-20241022',max_tokens:1024,messages:[{role:'user',content:'UK vet-practice assistant. RCVS+VMR aligned. Brief. Q: '+q}]})});
+        if(r.ok){const j=await r.json();const t=j.content&&j.content[0]&&j.content[0].text;if(t)return{src:'T3 · Claude Haiku',text:t}}
+      }catch(e){}
+    }
+    return await this.askT0(q);
+  }
+};
+async function updateTierBadge(){
+  const t=await Cascade.detectTier();const el=$('#tierBadge');
+  if(el){el.textContent=t==='T0'?'offline':t;el.classList.toggle('t3',t!=='T0')}
+}
+async function askQA(){
+  const q=$('#qaInput').value.trim();if(!q)return;
+  state.chat.push({role:'user',text:q});
+  $('#qaInput').value='';render();bindQA();
+  const t0=t0Match(q);
+  let res;
+  if(t0)res=t0;
+  else{
+    const tier=await Cascade.detectTier();
+    if(tier==='T3')res=await Cascade.askT3(q);else res=await Cascade.askT0(q);
+  }
+  state.chat.push({role:'bot',text:res.text,src:res.src});
+  render();bindQA();
+}
+
+// ── palette ──
+function openPalette(){$('#paletteBg').classList.add('open');$('#paletteInput').value='';renderPalette();setTimeout(()=>$('#paletteInput').focus(),50)}
+function closePalette(){$('#paletteBg').classList.remove('open')}
+function paletteKey(e){if(e.key==='Escape')closePalette();else if(e.key==='Enter'){const q=$('#paletteInput').value.trim();if(q.startsWith('/')){runCommand(q);closePalette()}else if(q){state.chat.push({role:'user',text:q});state.activeTab='qa';closePalette();renderTabs();render();askQAFromPalette(q)}}}
+async function askQAFromPalette(q){
+  const t0=t0Match(q);
+  let res;
+  if(t0)res=t0;
+  else{const tier=await Cascade.detectTier();res=tier==='T3'?await Cascade.askT3(q):await Cascade.askT0(q)}
+  state.chat.push({role:'bot',text:res.text,src:res.src});
+  render();bindQA();
+}
+function runCommand(c){
+  c=c.toLowerCase();
+  if(c.startsWith('/animal'))showApp('animals');
+  else if(c.startsWith('/consult'))showApp('consults');
+  else if(c.startsWith('/cd'))showApp('cd-register');
+  else if(c.startsWith('/vacc'))showApp('vaccinations');
+  else if(c.startsWith('/rx')||c.startsWith('/presc'))showApp('prescriptions');
+  else if(c.startsWith('/chip'))showApp('microchips');
+  else if(c.startsWith('/pss'))showApp('pss');
+  else if(c.startsWith('/vet'))showApp('clinicians');
+  else if(c.startsWith('/owner')||c.startsWith('/client'))showApp('clients');
+  else if(c.startsWith('/audit'))showApp('audit');
+  else if(c.startsWith('/dashboard'))showApp('dashboard');
+  else if(c.startsWith('/q'))showApp('qa');
+  else if(c.startsWith('/export'))exportSnapshot();
+  else if(c.startsWith('/settings'))openModal('settings');
+  else toast('unknown command');
+}
+const PALETTE_CMDS=[
+  ['/dashboard','dashboard'],['/animal','animals list'],['/consult','consults'],
+  ['/rx','prescriptions'],['/cd','controlled drug register'],['/vacc','vaccinations'],
+  ['/chip','microchip register'],['/pss','PSS evidence'],['/vet','clinicians'],
+  ['/owner','owners'],['/audit','audit chain'],['/q','Q&A'],
+  ['/export','export snapshot JSON'],['/settings','settings + API keys']
+];
+function renderPalette(){
+  const q=($('#paletteInput').value||'').toLowerCase();
+  const cmds=PALETTE_CMDS.filter(c=>!q||c[0].includes(q)||c[1].includes(q));
+  const t0sug=q.length>2?T0_RULES.filter(r=>r.match.test(q)).slice(0,3):[];
+  $('#paletteBd').innerHTML=
+    (cmds.length?'<div style="padding:8px 12px;font-family:var(--mono);font-size:10px;color:var(--brass);letter-spacing:0.1em;text-transform:uppercase">commands</div>':'')+
+    cmds.map(c=>'<div class="palette-row" onclick="runCommand(\''+c[0]+'\');closePalette()"><span class="mono" style="color:var(--brass);font-family:var(--mono);min-width:90px">'+c[0]+'</span><span style="color:var(--cream-dim)">'+c[1]+'</span></div>').join('')+
+    (t0sug.length?'<div style="padding:8px 12px;font-family:var(--mono);font-size:10px;color:var(--brass);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">T0 rules</div>':'')+
+    t0sug.map(r=>'<div class="palette-row" onclick="state.chat.push({role:\'user\',text:\''+esc(q).replace(/'/g,'')+'\'});closePalette();state.activeTab=\'qa\';renderTabs();const m=t0Match(\''+esc(q).replace(/\\/g,'').replace(/\'/g,'')+'\');if(m){state.chat.push({role:\'bot\',text:m.text,src:m.src});render();bindQA();}">'+esc(r.answer().slice(0,90))+'…</div>').join('')+
+    (!cmds.length&&!t0sug.length?'<div class="empty-state">type to search · press Enter to ask</div>':'');
+}
+
+// ── settings modal ──
+function modalSettings(){
+  const s=state.settings;
+  $('#modalContent').innerHTML='<h2>settings</h2>'+
+    '<p style="color:var(--cream-dim);font-size:12px;margin-bottom:10px">FallVet runs entirely offline with RCVS rules (T0). For free-form Q&amp;A grounded in UK vet practice, add an API key. <a href="https://aistudio.google.com/apikey" target="_blank">Gemini is free</a>. Keys stay on this device.</p>'+
+    '<div class="field"><label>active clinician</label><select id="s_active">'+state.clinicians.map(c=>'<option value="'+c.id+'" '+(state.activeClinicianId===c.id?'selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></div>'+
+    '<div class="field" style="margin-top:8px"><label>Gemini API key (free)</label><input id="s_gemini" type="password" value="'+esc(s.geminiKey||'')+'" placeholder="AIza..."></div>'+
+    '<div class="field" style="margin-top:8px"><label>Anthropic API key</label><input id="s_anthropic" type="password" value="'+esc(s.anthropicKey||'')+'" placeholder="sk-ant-..."></div>'+
+    '<div class="field" style="margin-top:8px"><label>OpenAI API key</label><input id="s_openai" type="password" value="'+esc(s.openaiKey||'')+'" placeholder="sk-..."></div>'+
+    '<div class="field" style="margin-top:8px"><label>OpenRouter API key</label><input id="s_or" type="password" value="'+esc(s.openrouterKey||'')+'" placeholder="sk-or-..."></div>'+
+    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">'+
+      '<div style="font-family:var(--mono);font-size:10px;color:var(--cream-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">data</div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" onclick="exportSnapshot()">export snapshot</button><button class="btn sm" onclick="exportAudit()">export audit</button><button class="btn sm danger" onclick="wipeAll()">wipe device</button></div>'+
+      '<div class="kpi" style="margin-top:10px"><span class="l">tool</span><span class="v mono">'+TOOLNAME+' '+VERSION+'</span></div>'+
+      '<div class="kpi"><span class="l">prime</span><span class="v mono">'+PRIME+'</span></div>'+
+      '<div class="kpi"><span class="l">audit entries</span><span class="v mono">'+state.audit.length+'</span></div>'+
+      '<div class="kpi"><span class="l">mesh</span><span class="v mono">fall-vet · fall-signal</span></div>'+
+    '</div>'+
+    '<div class="actions"><button class="btn ghost" onclick="closeModal()">close</button><button class="btn primary" onclick="saveSettings()">save</button></div>';
+}
+async function saveSettings(){
+  await settingSet('geminiKey',$('#s_gemini').value);
+  await settingSet('anthropicKey',$('#s_anthropic').value);
+  await settingSet('openaiKey',$('#s_openai').value);
+  await settingSet('openrouterKey',$('#s_or').value);
+  state.activeClinicianId=$('#s_active').value;
+  await settingSet('activeClinicianId',state.activeClinicianId);
+  await loadAll();await updateTierBadge();
+  closeModal();toast('saved');
+}
+async function wipeAll(){
+  if(!confirm('Wipe ALL data on this device? This is irreversible. The audit chain is destroyed too.'))return;
+  if(!confirm('Really? Type-confirm by clicking OK only if certain.'))return;
+  for(const s of STORES){await idbClear(s)}
+  location.reload();
+}
+
+// ── boot ──
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openPalette()}
+  if(e.key==='Escape'){closePalette();closeModal()}
+});
+
+(async function boot(){
+  try{
+    await openDB();
+    await loadAll();
+    await loadAudit();
+    meshInit();
+    renderTabs();renderSidebar();renderAnimalPill();render();
+    await updateTierBadge();
+    if(state.firm)setTimeout(()=>broadcast('sync.request',{}),500);
+  }catch(e){
+    document.body.innerHTML='<div style="padding:40px;color:#e6e1d6;font-family:Georgia"><h1 style="color:#c8974a">FallVet</h1><p>boot error: '+esc(e.message||String(e))+'</p><p>Try a modern browser (Chrome 113+, Firefox 110+, Safari 16+).</p></div>';
+  }
+})();
+
+// ── KONOMI sovereign tier (inert) ──
+window.KONOMI={active:true,tier:'sovereign',prime:PRIME,tool:TOOLNAME,version:VERSION,check:function(){return{ok:true,tier:'sovereign',prime:PRIME}}};
+window.FALLVET={state,Cascade,T0_RULES,broadcast,exportSnapshot};
+</script>
+</body>
+</html>

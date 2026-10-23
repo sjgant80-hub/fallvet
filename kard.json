@@ -1,0 +1,29 @@
+{
+  "kind": "kard.v1",
+  "name": "fallvet",
+  "title": "FallVet",
+  "retires": "veterinary practice software",
+  "category": "Health and care",
+  "license": "MIT",
+  "live": "https://sjgant80-hub.github.io/fallvet/",
+  "repo": "https://github.com/sjgant80-hub/fallvet",
+  "studs": {
+    "brain": {
+      "how": "inline",
+      "version": "3.1.0"
+    },
+    "mesh": {
+      "device": true,
+      "peer": false
+    },
+    "memory": {
+      "indexeddb": true,
+      "localstorage": false
+    },
+    "proof": {
+      "workflows": 1,
+      "tests": 2
+    }
+  },
+  "fits": true
+}
